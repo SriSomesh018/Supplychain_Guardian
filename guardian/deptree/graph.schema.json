@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deptree.local/graph.schema.json",
+  "title": "deptree graph.json",
+  "description": "Evidence-backed dependency graph. Schema evolution is additive: new optional fields (e.g. node.vulnerabilities, node.defects, node.risk) may be added under schema_version 1.x; consumers must ignore unknown fields and unknown enum values of `relation` and `type`.",
+  "type": "object",
+  "required": ["schema_version", "project", "generated_at", "roots", "nodes", "edges", "unsupported"],
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^1\\."},
+    "project": {"type": "string"},
+    "git_commit": {"type": ["string", "null"]},
+    "source": {"type": "object", "description": "{type: git, url, clone_url, ref, subdir, commit} or {type: local, path}"},
+    "generated_at": {"type": "string", "format": "date-time", "description": "Only field that changes between identical scans."},
+    "generator": {"type": "object", "properties": {"name": {"type": "string"}, "version": {"type": "string"}}},
+    "roots": {"type": "array", "items": {"type": "string", "pattern": "^app:"}, "description": "One sub-root per manifest (package.json, Dockerfile, workflow, ...)."},
+    "nodes": {"type": "array", "items": {"$ref": "#/$defs/node"}},
+    "edges": {"type": "array", "items": {"$ref": "#/$defs/edge"}},
+    "manifests": {"type": "array", "items": {"type": "object", "required": ["file", "status"], "properties": {
+      "file": {"type": "string"}, "ecosystem": {"type": "string"}, "parser": {"type": "string"},
+      "status": {"enum": ["parsed", "consumed", "unsupported", "error"]},
+      "consumed_by": {"type": "string"}, "detail": {"type": "string"},
+      "roots": {"type": "array", "items": {"type": "string"}}}}},
+    "unresolved": {"type": "array", "items": {"type": "object", "required": ["reason"], "description": "Dependencies that could not be resolved to an exact node."}},
+    "unsupported": {"type": "array", "items": {"type": "object", "required": ["file", "reason"], "properties": {"file": {"type": "string"}, "reason": {"type": "string"}}}},
+    "checks": {"type": "array", "items": {"type": "object", "required": ["check", "status"]}},
+    "stats": {"type": "object"}
+  },
+  "$defs": {
+    "evidence": {"type": "object", "required": ["file", "locator"], "properties": {
+      "file": {"type": "string", "description": "Path relative to the scanned repository's parent (starts with the project folder)."},
+      "locator": {"type": "string", "description": "Where in the file, e.g. packages[\"node_modules/express\"], line 12, jobs.test.steps[0].uses"},
+      "source": {"type": "string", "description": "Set to 'generated-lockfile' when the lockfile was generated, not committed."}}},
+    "node": {"type": "object", "required": ["id", "type", "ecosystem", "name", "direct", "scopes", "evidence"], "properties": {
+      "id": {"type": "string", "description": "purl for packages/images/actions; app:<manifest> for roots; local-action:<path> for local actions."},
+      "type": {"enum": ["application", "package", "container-image", "github-action"]},
+      "ecosystem": {"type": "string", "description": "npm, pypi, golang, maven, gem, composer, cargo, nuget, docker, github-actions"},
+      "name": {"type": "string"},
+      "version": {"type": ["string", "null"], "description": "Exact resolved version. null when unresolved (see properties.version_unresolved): such nodes cannot be matched to CVEs exactly."},
+      "purl": {"type": ["string", "null"], "description": "Package URL; use this for OSV / vulnerability database queries."},
+      "direct": {"type": "boolean"},
+      "min_depth": {"type": ["integer", "null"], "minimum": 0},
+      "scopes": {"type": "array", "items": {"type": "string"}, "description": "Root-edge scopes through which the node is reachable: prod, dev, optional, peer, build, runtime, ci."},
+      "resolved": {"type": ["string", "null"], "description": "Download URL / source as recorded in the lockfile."},
+      "integrity": {"type": ["string", "null"], "description": "Lockfile hash (npm SRI, cargo/composer checksum, nuget contentHash, go.sum h1)."},
+      "evidence": {"type": "array", "items": {"$ref": "#/$defs/evidence"}, "minItems": 1},
+      "properties": {"type": "object", "description": "Type-specific extras (tag/digest/pinned_by_digest for images, pinned_to_sha/ref_type for actions, workspace, bundled, version_unresolved, ...)."}}},
+    "edge": {"type": "object", "required": ["from", "to", "relation"], "properties": {
+      "from": {"type": "string"}, "to": {"type": "string"},
+      "relation": {"enum": ["depends_on", "uses_base_image", "uses_image", "uses_action"]},
+      "scope": {"type": ["string", "null"]},
+      "declared_range": {"type": ["string", "null"], "description": "Range as written by the dependent (package.json, lockfile requires, ...)."},
+      "properties": {"type": "object"}}}
+  }
+}

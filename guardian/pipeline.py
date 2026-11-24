@@ -34,6 +34,7 @@ STEPS = [
     ("discover", "Read the ingredient list"),
     ("sbom", "Build the family tree"),
     ("vulns", "Check against known-bad lists"),
+    ("intel", "Check real-world exploitation"),
     ("tamper", "Look for tampering"),
     ("compare", "Compare with last known-good"),
     ("ai", "Ask AI to explain"),
@@ -97,6 +98,40 @@ def _discovery_story(inv, graph: DepGraph, lock_status: str) -> dict:
     }
 
 
+def _full_graph(target: Path, out: Path, slug: str) -> dict | None:
+    """Full multi-ecosystem dependency graph (all manifests: npm, containers, CI, ...) for the Full Graph tab.
+
+    Built by the vendored deptree engine. Optional: any failure leaves the Guardian scan untouched."""
+    try:
+        from .deptree.context import Options
+        from .deptree.outputs import dumps
+        from .deptree.scanner import scan as deptree_scan
+        g = deptree_scan(target, out_dir=out / "deptree", options=Options(), repo_root=target.parent, project=slug)
+        (out / "deptree_graph.json").write_text(dumps(g), encoding="utf-8")
+        s = g["stats"]
+        return {"file": "deptree_graph.json", "manifests": s["roots"], "nodes": s["nodes"], "edges": s["edges"],
+                "max_depth": s["max_depth"], "ecosystems": sorted(s["by_ecosystem"]),
+                "npm_ls_checks": [{"root": c["root"], "status": c["status"]} for c in g["checks"]]}
+    except Exception as e:  # never break the main scan
+        (out / "deptree_graph.json").unlink(missing_ok=True)
+        return {"error": f"{type(e).__name__}: {str(e)[:200]}"}
+
+
+def _remediation(target: Path, out: Path, ranked, inv) -> dict:
+    """Fix proposals for human approval. Optional: a failure never breaks the scan.
+
+    A new scan invalidates the previous sandbox result and patch; reviewer decisions are kept."""
+    try:
+        from .remediation import plan_fixes
+        for stale in ("remediation_result.json", "remediation.patch"):
+            (out / stale).unlink(missing_ok=True)
+        if (out / "sandbox").exists():
+            shutil.rmtree(out / "sandbox", ignore_errors=True)
+        return plan_fixes(target, ranked, inv)
+    except Exception as e:
+        return {"fixes": [], "skipped": [], "error": f"{type(e).__name__}: {str(e)[:200]}"}
+
+
 def _files(target: Path, out: Path, workflows: list[str]) -> dict:
     def info(p: Path, name: str, role: str):
         return {"name": name, "role": role, "size": p.stat().st_size} if p.exists() else None
@@ -107,7 +142,8 @@ def _files(target: Path, out: Path, workflows: list[str]) -> dict:
     outs = [("guardian_report.json", "Machine-readable Guardian report (findings, evidence, AI reasoning)"),
             ("sbom.cdx.json", "Software Bill of Materials, CycloneDX 1.5"),
             ("sbom.baseline.cdx.json", "SBOM of the baseline, for comparison"),
-            ("sbom.syft.cdx.json", "Independent SBOM from Syft, used as a cross-check")]
+            ("sbom.syft.cdx.json", "Independent SBOM from Syft, used as a cross-check"),
+            ("deptree_graph.json", "Full dependency graph of every manifest (npm, containers, CI), with depth and evidence")]
     outputs = [info(out / n, n, r) for n, r in outs]
     outputs += [info(p, p.name, "Raw Trivy container-image scan") for p in sorted(out.glob("trivy-image-*.json"))]
     return {"inputs": [x for x in inputs if x], "outputs": [x for x in outputs if x]}
@@ -121,79 +157,16 @@ def run_scan(target: Path, out: Path, baseline: Path | None = None, *, emit: Emi
     out.mkdir(parents=True, exist_ok=True)
     cache.mkdir(exist_ok=True)
 
-    emit("discover", "running", "Reading package.json and package-lock.json")
-    inv = discover(target)
-    graph = DepGraph(inv)
-    stats = graph.stats()
-    emit("discover", "done", f"{stats['direct']} packages chosen by the developers pulled in "
-                             f"{stats['transitive']:,} more", {"direct": stats["direct"],
-                             "transitive": stats["transitive"], "total": stats["total_components"]})
-
-    emit("sbom", "running", "Linking every package to the packages that need it")
-    sbom_path = write_sbom(inv, out)
-    syft = syft_crosscheck(target, out) if use_syft else {"available": False, "skipped": True}
-    if syft.get("npm_components") is not None:
-        syft["guardian_runtime_unique"] = stats["runtime_unique_name_versions"]
-        syft["note"] = ("Syft catalogs production (non-dev) packages, de-duplicated by name@version; "
-                        "compare with guardian_runtime_unique")
-    emit("sbom", "done", f"{stats['edges']:,} links, up to {stats['max_depth']} levels deep. SBOM written",
-         {"edges": stats["edges"], "depth": stats["max_depth"], "syft": syft.get("npm_components")})
-
-    emit("vulns", "running", f"Asking OSV.dev about {stats['unique_name_versions']:,} package versions")
-    vulns, vstats = scan_vulnerabilities(inv, graph, cache)
-    mal = sum(1 for f in vulns if f.category == "malicious-package")
-    emit("vulns", "done", f"{vstats['advisories']} known problems on {vstats['vulnerable_packages']} packages"
-                          + (f", including {mal} malware alerts" if mal else ""),
-         {"advisories": vstats["advisories"], "packages": vstats["vulnerable_packages"], "malware": mal})
-
-    emit("tamper", "running", "Checking for look-alike names, install scripts, odd download sources, Dockerfile and CI risks")
-    other, images, workflows = _non_vuln_checks(target, inv, graph)
-    findings = vulns + other
-    img = _pick_image(images) if use_trivy else None
-    if img:
-        emit("tamper", "running", f"Scanning the container base image {img} with Trivy")
-        f = trivy_image_scan(img, cache, out)
-        if f:
-            findings.append(f)
-    emit("tamper", "done", f"{len(other)} supply-chain warnings beyond known CVEs",
-         {"warnings": len(other), "images": len(set(images)), "workflows": len(workflows)})
-
-    changes: dict = {}
-    if baseline and (baseline / "package-lock.json").exists():
-        emit("compare", "running", "Comparing every package, hash and script with the last known-good copy")
-        b_inv = discover(baseline)
-        b_graph = DepGraph(b_inv)
-        diff_f, changes = diff_against_baseline(b_inv, inv, graph)
-        b_vulns, _ = scan_vulnerabilities(b_inv, b_graph, cache)
-        b_other, b_images, b_wfs = _non_vuln_checks(baseline, b_inv, b_graph)
-        base_sigs = {_signature(x) for x in b_vulns + b_other}
-        for f in findings:
-            if not f.id.startswith("IMAGE-"):
-                f.changed = _signature(f) not in base_sigs
-        changes["new_images"] = sorted(set(images) - set(b_images))
-        changes["new_workflows"] = sorted(set(workflows) - set(b_wfs))
-        findings += diff_f
-        changes["new_findings"] = sum(1 for f in findings if f.changed)
-        changes["baseline_label"] = meta.get("baseline_label", "trusted baseline")
-        write_sbom(b_inv, out, "sbom.baseline.cdx.json")
-        emit("compare", "done", f"{changes['new_findings']} findings are new since the baseline",
-             {"new": changes["new_findings"]})
-    else:
-        emit("compare", "done", "First scan of this repository: it becomes the baseline for the next scan",
-             {"new": 0})
-
-    ranked = rank(findings)
-
-    emit("ai", "running", f"Sending the top {top} findings (evidence only) to the AI for explanation")
-    llm = LLM(cache)
-    if not use_llm:
-        llm.key = ""
-    context = {"app": f"{inv.app_name}@{inv.app_version}", "ecosystem": "npm (Node.js)",
-               "deployment": "Docker image; production install excludes devDependencies",
-               "inventory": stats, "changes_vs_baseline": changes}
-    ai_status = explain(ranked, context, llm, top_n=top)
-    emit("ai", "done", f"Explained by {ai_status['model']}" if ai_status["mode"] == "llm"
-         else "AI unavailable: used deterministic explanations", {"mode": ai_status["mode"], "model": ai_status["model"]})
+    # Five agents orchestrated by LangGraph: discovery -> (vulnerability || integrity) -> change? -> risk
+    from .agents.base import ScanContext
+    from .agents.orchestrator import run_agents
+    ctx = ScanContext(target=target, out=out, baseline=baseline, cache=cache, emit=emit, meta=meta, top=top,
+                      use_llm=use_llm, use_trivy=use_trivy, use_syft=use_syft, lock_status=lock_status)
+    st, agents_report = run_agents(ctx)
+    inv, graph, stats = st["inv"], st["graph"], st["stats"]
+    sbom_path, syft, full_graph = st["sbom_path"], st["syft"], st.get("full_graph")
+    vstats, images, workflows = st["vstats"], st["images"], st["workflows"]
+    changes, ranked, ai_status = st.get("changes") or {}, st["ranked"], st["ai_status"]
 
     emit("report", "running", "Writing the report, SBOM and evidence files")
     levels = Counter(f.risk_level for f in ranked)
@@ -243,6 +216,9 @@ def run_scan(target: Path, out: Path, baseline: Path | None = None, *, emit: Emi
         "sbom": {"file": sbom_path.name, "format": "CycloneDX 1.5 JSON",
                  "components": stats["total_components"], "syft_crosscheck": syft},
         "vulnerability_scan": {"source": "OSV.dev", **vstats},
+        "full_graph": full_graph,
+        "agents": agents_report,
+        "remediation": _remediation(target, out, ranked, inv),
         "ai": ai_status,
         "evidence_policy": "`evidence` entries are verified tool output. `ai` entries are model "
                            "inference generated from that evidence only and are never used for scoring.",

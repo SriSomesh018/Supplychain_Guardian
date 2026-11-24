@@ -15,6 +15,7 @@ from pathlib import Path
 from flask import Flask, abort, jsonify, request, send_file, send_from_directory
 
 from .pipeline import STEPS, copy_baseline, run_scan
+from .agents.base import AgentFailed, friendly_error
 from .repo import PRESETS, TARGETS, FetchError, clone, ensure_lockfile, save_snapshot, slug_for, snapshot_dir
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,10 +79,14 @@ def _run_job(job: dict, preset: str | None, url: str | None) -> None:
                 save_snapshot(target, slug)
         job.update(status="done", slug=slug)
     except FetchError as e:
-        job.update(status="error", error=str(e))
+        job.update(status="error", error=str(e), failed_step="fetch")
+    except AgentFailed as e:
+        job.update(status="error", error=e.message, failed_step=e.step, failed_agent=e.agent)
     except Exception as e:  # surface, never crash the server
         traceback.print_exc()
-        job.update(status="error", error=f"{type(e).__name__}: {str(e)[:300]}")
+        running = [ev["step"] for ev in job["events"] if ev["status"] == "running"]
+        job.update(status="error", error=friendly_error(e), failed_step=running[-1] if running else None,
+                   detail=f"{type(e).__name__}: {str(e)[:300]}")
 
 
 @app.get("/")
@@ -175,6 +180,84 @@ def input_file(slug):
     if target not in f.parents or not f.exists():
         abort(404)
     return send_file(f, mimetype="text/plain")
+
+
+# ------------------------------------------------------------------ remediation (human approval)
+FIX_LOCK = threading.Lock()
+
+
+def _rescan(sandbox: Path):
+    """Advisories still present in the sandbox, and installed versions per package."""
+    from .discover import discover
+    from .graph import DepGraph
+    from .vulns import scan_vulnerabilities
+    inv = discover(sandbox)
+    findings, _ = scan_vulnerabilities(inv, DepGraph(inv), ROOT / ".cache")
+    remaining: dict[str, list[str]] = {}
+    for f in findings:
+        remaining.setdefault(f.component, []).extend(f.vuln_ids)
+    installed: dict[str, list[str]] = {}
+    for c in inv.components.values():
+        installed.setdefault(c.name, [])
+        if c.version not in installed[c.name]:
+            installed[c.name].append(c.version)
+    return remaining, installed
+
+
+def _fix_state(slug: str) -> dict:
+    from .remediation import load_decisions
+    p = _report_path(slug)
+    if not p.exists():
+        abort(404)
+    r = json.loads(p.read_text(encoding="utf-8"))
+    res = p.parent / "remediation_result.json"
+    return {"plan": r.get("remediation") or {"fixes": [], "skipped": []}, "decisions": load_decisions(p.parent),
+            "result": json.loads(res.read_text(encoding="utf-8")) if res.exists() else None,
+            "target": r["target"]["path"], "dir": p.parent}
+
+
+@app.get("/api/report/<slug>/fixes")
+def fixes(slug):
+    st = _fix_state(slug)
+    return jsonify({k: v for k, v in st.items() if k not in ("target", "dir")})
+
+
+@app.post("/api/report/<slug>/fixes/<path:fix_id>/decision")
+def fix_decision(slug, fix_id):
+    from .remediation import record_decision
+    st = _fix_state(slug)
+    if fix_id not in {f["id"] for f in st["plan"]["fixes"]}:
+        return jsonify({"error": "unknown fix"}), 404
+    body = request.get_json(silent=True) or {}
+    try:
+        entry = record_decision(st["dir"], fix_id, body.get("decision", ""), body.get("reviewer", ""), body.get("comment", ""))
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    return jsonify(entry)
+
+
+@app.post("/api/report/<slug>/fixes/apply")
+def fix_apply(slug):
+    from .remediation import apply_fixes
+    st = _fix_state(slug)
+    if not FIX_LOCK.acquire(blocking=False):
+        return jsonify({"error": "Fixes are already being applied. Please wait."}), 409
+    try:
+        result = apply_fixes(Path(st["target"]), st["dir"], st["plan"], st["decisions"], _rescan)
+    except Exception as e:
+        traceback.print_exc()
+        result = {"ok": False, "error": friendly_error(e)}
+    finally:
+        FIX_LOCK.release()
+    return jsonify(result), (200 if result.get("ok") else 400)
+
+
+@app.get("/api/report/<slug>/fixes/patch")
+def fix_patch(slug):
+    p = _report_path(slug).parent / "remediation.patch"
+    if not p.exists():
+        abort(404)
+    return send_file(p, mimetype="text/plain", as_attachment=True, download_name=f"{slug}-remediation.patch")
 
 
 def serve(port: int = 8765) -> None:

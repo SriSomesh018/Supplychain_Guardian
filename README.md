@@ -38,6 +38,52 @@ targets/nodegoat-modified ─┤                      (state under review)
  output/report.html  ·  output/guardian_report.json  ·  output/sbom*.cdx.json  ·  output/trivy-*.json
 ```
 
+### Six agents, orchestrated with LangGraph
+
+```
+START → [1] Discovery ─┬─► [2] Vulnerability ─► [3] Threat intelligence ─┬─► merge ─(baseline?)─► [5] Change detection ─► [6] Risk & explanation → report
+                       └─► [4] Supply-chain integrity ───────────────────┘        └──(no)───────────────────────┘         (Gemini via LangChain)
+```
+
+| Agent | Job | Sources / tools |
+|---|---|---|
+| 1 Discovery | inventory, dependency graph, SBOM, full multi-manifest graph | lockfile parser, networkx, CycloneDX, Syft, deptree |
+| 2 Vulnerability | CVE / GHSA / malware per name@version, cross-checked across 3 sources | OSV.dev, GitHub Advisory DB (npm bulk API), deps.dev |
+| 3 Threat intelligence | real-world exploitation and package health | CISA KEV, FIRST EPSS, deps.dev (deprecation, licenses, OpenSSF Scorecard) |
+| 4 Supply-chain integrity | typosquats, install scripts, sources, hashes, Dockerfile and CI rules | rapidfuzz + npm downloads, rules, Trivy |
+| 5 Change detection | what is new since the last known-good copy (runs only with a baseline) | lockfile diff, baseline re-scan |
+| 6 Risk & explanation | deterministic 0-100 score, then Gemini explains the top findings | risk model, `langchain-google-genai`, guardrails |
+
+All external sources are free and need no API key (Sonatype OSS Index was evaluated but now requires an account).
+The risk score uses exploit intelligence: +15 if the CVE is in CISA KEV, +10/+5 for EPSS ≥ 50% / ≥ 10%, -5 for EPSS < 1%,
+and confidence is "High (2 sources)" when two advisory databases agree.
+
+**Failure handling.** Network agents retry with backoff (LangGraph `RetryPolicy`). If one advisory source fails, the
+others' results are kept and a warning is recorded. If an agent still fails, it degrades: its step shows a clear error,
+the scan continues, and the results page shows a "Partial results" bar. Only a discovery failure stops the scan, with
+the failed step named.
+
+**Tests.** `python -m pytest tests` runs 45 offline tests (all external services are faked): semver matching, advisory
+cross-checks, KEV/EPSS enrichment, risk scoring, agent order and parallelism, retries and degradation, baseline
+detection, the Gemini client (model fallback, key redaction), the Flask API, and an end-to-end scan.
+
+### Fixes with human approval (Day 2)
+
+After the AI reasoning and next step, every vulnerable package with a published fix gets a **proposed code change**:
+
+- direct dependency → its version range is bumped in `package.json`
+- transitive dependency → a version-scoped npm `overrides` entry (`"minimist@1.2.0": "1.2.6"`)
+
+The reviewer sees the **current and proposed code side by side**, which advisories the fix closes, whether it is a
+patch, minor or MAJOR update, and any limits (e.g. copies bundled inside another package cannot be overridden).
+They **approve or reject** each fix with their name and an optional comment; decisions are logged with history in
+`output/<repo>/approvals.json`.
+
+**Apply approved fixes in a sandbox** copies the project to `output/<repo>/sandbox/` (the original is never changed),
+regenerates the lockfile with `npm install --package-lock-only --ignore-scripts`, re-scans it, and reports each fix as
+*resolved*, *partly resolved* or *not applied*. The combined change is saved as `remediation.patch` to review and apply
+by hand. Proposals are deterministic: the AI explains, it never writes code. Code: `guardian/remediation.py`.
+
 Design rules:
 - **Scores and facts come only from deterministic tools.** The LLM explains and never scores.
 - **Nothing from the target is installed or executed.** We parse files only.
@@ -84,6 +130,13 @@ Dependency Graph (tree/network) · Vulnerabilities (bubble map) · Suspicious Ch
 Repos without a lockfile are resolved with `npm install --package-lock-only --ignore-scripts` (no code runs).
 Each scan of a GitHub URL is snapshotted, and the next scan of the same repo shows what changed.
 
+**Full Graph tab.** Every scan also maps every manifest in the repository (npm, Dockerfiles,
+docker-compose, GitHub Actions, plus Python/Go/Java/Ruby/PHP/Rust/.NET when present) into one radial graph:
+project → ecosystem → manifest → packages by depth. Node size is the number of dependents, and colour is the
+worst Guardian finding on that package. Click a node to see every path to it, its evidence, and its findings.
+The engine is vendored in `guardian/deptree/` and writes `output/<repo>/deptree_graph.json` (npm graphs are
+cross-checked with `npm ls`). If it fails, the rest of the scan is unaffected.
+
 Manual CLI run and options:
 ```powershell
 python -m guardian scan --target targets\nodegoat-modified --baseline targets\nodegoat-baseline `
@@ -99,23 +152,27 @@ python -m guardian scan --target targets\nodegoat-modified --baseline targets\no
 | `output/sbom.syft.cdx.json` | Independent Syft SBOM (cross-check) |
 | `output/trivy-image-node_12-alpine.json` | Raw Trivy image scan |
 
-## Risk score (initial, Day 1)
+## Risk score
 `base` = CVSS×10 (vulns) or severity (85/65/40/20) · malicious package → floor 95 · **+10** runtime (in prod image) ·
-**−25** dev-only · **+10** CI step with secrets · **+5** direct dependency · **+10** new vs baseline · **+5** no fix.
-Levels: ≥80 Critical, ≥60 High, ≥35 Medium, ≥15 Low. The rationale is stored on every finding.
+**−25** dev-only · **+10** CI step with secrets · **+5** direct dependency · **+10** new vs baseline · **+5** no fix ·
+exploit intelligence: **+15** in CISA KEV (exploited in the wild), else FIRST EPSS **+10** (≥50%) / **+5** (≥10%) / **−5** (<1%).
+Levels: ≥80 Critical, ≥60 High, ≥35 Medium, ≥15 Low. The rationale is stored on every finding. Confidence is
+"High (2 sources)" when OSV.dev and the GitHub Advisory DB agree.
 
 ## Responsible AI and security
 - The LLM receives only the top-N findings' verified evidence (no source code, no secrets) in a single request, cached on disk under `.cache/llm`.
 - The prompt forbids adding facts. Advisory IDs that are not in the evidence are removed automatically and listed.
 - If the API fails or hits a rate limit, a deterministic template is used and the report says so.
-- The AI never changes scores, files or dependencies. Day 2 remediation will require **human approval**.
+- The AI never changes scores, files or dependencies. Every fix requires **human approval** and is applied only to a sandbox copy.
 
-## Known limitations (Day 1)
-- npm only (lockfile v2/v3). No reachability analysis yet (planned Day 2 stretch goal).
+## Known limitations
+- Risk scoring and fixes are npm-only (lockfile v2/v3); other ecosystems appear in the Full Graph inventory only. No reachability analysis yet.
+- A fix can be *partly resolved* when another package pins its own copy (e.g. `express@4.16.4` pins `body-parser@1.18.3`): upgrade the parent too.
 - The typosquat reference list is curated (`guardian/data/popular_npm.txt`). Lookalikes with ≥50k weekly downloads are treated as legitimate.
 - Docker is not installed on the dev machine, so the image is scanned remotely by Trivy and the Dockerfile is analysed statically.
 - `node:latest` is flagged but not scanned (a floating tag gives a non-reproducible result).
 
-## Day 2 preview
-Prioritise with reachability → recommend fix → **human approve/reject** (CLI/Streamlit) → apply in sandbox
-branch → build and test in Docker → rescan → before/after SBOM diff → final Guardian report.
+## Status and next steps
+Done: discover → detect (3 advisory sources + exploit intelligence) → prioritise → explain → propose fix →
+**human approve/reject** → apply in sandbox → re-scan → patch file.
+Next: reachability analysis, build and test the sandbox in Docker, before/after SBOM diff in the report.

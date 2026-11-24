@@ -50,8 +50,8 @@ main{max-width:1360px;margin:0 auto;padding:26px 24px 90px}
 @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .vhead h2{font-size:23px;font-weight:800} .vhead p{margin:5px 0 0;color:var(--muted);max-width:780px}
-.plain{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(90deg,#fffbea,#fff);border:1px solid #f6e7b0;border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:13.5px;color:#5b4a0b}
-.plain b{color:#3f3304} .plain .ic{font-size:18px;line-height:1}
+.plain{display:block;background:none;border:0;border-left:3px solid var(--line);border-radius:0;padding:2px 0 2px 12px;margin-bottom:16px;font-size:13px;color:var(--muted)}
+.plain b{color:var(--ink-2);font-weight:600} .plain .ic{display:none} .plain>div{display:inline}
 
 /* primitives */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
@@ -324,6 +324,132 @@ input.in:focus,select.in:focus{border-color:var(--brand-2);box-shadow:0 0 0 3px 
 @media (max-width:1100px){.lhero,.g2,.g3,.g4,.md,.journey,.filesflow,.chain,.suppliers,.downs,.presets{grid-template-columns:1fr}.steps-strip{grid-template-columns:repeat(2,1fr)}.stage{margin:8px 0}.stage:after{display:none}.jnav,.detail{position:static}.gpanel{position:static;width:auto}.downs{display:none}}
 @media (max-width:640px){main{padding:18px 16px 70px}.tb{padding:10px 16px}.lhero h1{font-size:34px}.chapter{padding:22px 18px}.doc{padding:24px 18px}.dl,.aiq{grid-template-columns:1fr}.dmeta{grid-template-columns:1fr}}
 @media print{.topbar,.noprint{display:none!important}body{background:#fff}main{padding:0}.card{box-shadow:none;border:0}.doc{padding:0}}
+/* ---------- calmer theme: flat colours, no gradients or glow ---------- */
+:root{--brand:#1e3a8a;--brand-2:#1d4ed8;--brand-soft:#eef2ff;--shadow:0 1px 2px rgba(15,23,42,.05);--shadow-lg:0 4px 14px rgba(15,23,42,.07);--r:10px}
+.logo{background:var(--ink);box-shadow:none}
+.lhero h1 em{background:none;-webkit-text-fill-color:currentColor;color:var(--brand)}
+.pbar div{background:var(--brand)}
+.belt{background:var(--surface-2)}
+.tstep.running .ico{box-shadow:0 0 0 3px var(--brand-soft);animation:none}
+.preset:hover{transform:none}
+.topbar{backdrop-filter:none;background:var(--surface)}
+/* ---------- tabs: "More" menu ---------- */
+.tabmore{position:relative}
+.tabmenu{position:fixed;z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow-lg);padding:4px;min-width:220px}
+.tabmenu button{display:block;width:100%;text-align:left;appearance:none;border:0;background:none;font:inherit;font-size:13px;padding:8px 10px;border-radius:6px;cursor:pointer;color:var(--ink-2)}
+.tabmenu button:hover{background:var(--surface-2)} .tabmenu button.on{color:var(--brand);font-weight:600}
+.tabmenu.hidden{display:none}
+.tstep .ico{font-size:14px;font-weight:700;color:var(--muted)}
+/* ---------- FIXES (human approval) ---------- */
+.fixblk{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface)}
+.fixhead{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:6px}
+.fxst{font-size:11.5px;font-weight:600;border-radius:4px;padding:2px 7px;white-space:nowrap;border:1px solid var(--line)}
+.fxst.ok{color:var(--ev);border-color:var(--ev-line);background:var(--ev-soft)} .fxst.no{color:var(--crit);border-color:#fecaca;background:var(--crit-soft)} .fxst.wait{color:var(--muted)}
+.chip.bump-patch{background:var(--ev-soft);color:var(--ev)} .chip.bump-minor{background:var(--low-soft);color:var(--low)} .chip.bump-major{background:var(--crit-soft);color:var(--crit);font-weight:700}
+.dv{border:1px solid var(--line);border-radius:8px;overflow:auto;max-height:340px;font-family:var(--mono);font-size:12px}
+.dvh{display:grid;grid-template-columns:1fr 1fr;position:sticky;top:0;background:var(--surface-2);border-bottom:1px solid var(--line);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.dvh span{padding:6px 10px} .dvh span+span{border-left:1px solid var(--line)}
+.dv table{border-collapse:collapse;width:100%;table-layout:fixed}
+.dv td{padding:1px 8px;white-space:pre;overflow:hidden;text-overflow:ellipsis;vertical-align:top}
+.dv td.ln{width:36px;color:var(--faint);text-align:right;user-select:none;background:var(--surface-2)}
+.dv td.o{border-right:1px solid var(--line)}
+.dv tr.del td.o,.dv tr.chg td.o{background:#fdecec} .dv tr.add td.n,.dv tr.chg td.n{background:#e9f8ee}
+.dv tr.gap td{text-align:center;color:var(--faint);background:var(--surface-2)}
+.fxdec{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.fxdec .in{padding:7px 10px;font-size:13px} .fxdec .in.need{border-color:var(--crit)}
+.fxsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.fxsteps div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;background:var(--surface)}
+.fxsteps b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;margin-right:8px}
+.fxbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.fxcounts{display:flex;gap:18px;flex-wrap:wrap;font-size:13px} .fxcounts b{font-size:18px;margin-right:4px}
+.fxrow{border-top:1px solid var(--line-2)} .fxrow-head{display:flex;gap:10px;align-items:center;padding:10px 16px;cursor:pointer;flex-wrap:wrap} .fxrow-head:hover{background:var(--surface-2)}
+.fxrow.open .fxrow-head{background:var(--surface-2)} .fxrow-body{padding:14px 16px 18px;border-top:1px solid var(--line-2)}
+@media (max-width:900px){.fxsteps{grid-template-columns:1fr 1fr}}
+/* ---------- error states ---------- */
+.tstep.error .ico{border-color:#fecaca;background:var(--crit-soft)} .tstep.error:before{background:#fecaca}
+.tstep.error .msg{color:var(--crit)}
+.st-err{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--crit);color:#fff;font-size:11px;font-weight:800}
+.scan-result{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.scan-result.warn{border-color:#fde68a;background:#fffbeb} .scan-result.err{border-color:#fecaca;background:#fff7f7}
+.degraded-bar{display:flex;gap:10px;align-items:center;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 14px;margin:0 0 16px;font-size:13px;color:#854d0e}
+/* ---------- AGENTS tab ---------- */
+.ag-flow{display:grid;grid-template-columns:1fr 24px 1.2fr 24px 1fr 24px 1fr;gap:0;align-items:stretch;margin-bottom:18px}
+.ag-col{display:flex;flex-direction:column;gap:10px;justify-content:center}
+.ag-branch{display:flex;flex-direction:column;gap:4px;padding:8px;border:1px dashed var(--line);border-radius:12px}
+.ag-down{text-align:center;color:var(--faint);font-size:14px;line-height:1}
+.ag-arrow{display:grid;place-items:center;color:var(--faint);font-size:16px}
+.ag-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 14px 12px;cursor:pointer;min-width:0}
+.ag-card:hover,.ag-card.on{border-color:var(--ink)}
+.ag-card .h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ag-card .n{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em}
+.ag-card b{display:block;font-size:14px;margin:4px 0 4px}
+.ag-card p{margin:0;font-size:12.5px;color:var(--ink-2)}
+.ag-st{font-size:11px;font-weight:600;border-radius:4px;padding:1px 6px;border:1px solid var(--line);color:var(--muted)}
+.ag-st.done{color:var(--ev);border-color:var(--ev-line)} .ag-st.skipped{color:var(--muted)} .ag-st.error{color:var(--crit);border-color:#fecaca}
+.ag-llm{font-size:11px;color:var(--ink-2);border:1px dashed var(--line);border-radius:4px;padding:0 5px;margin-left:4px}
+.ag-tl{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:12px 14px}
+.ag-tl .row{display:grid;grid-template-columns:200px 1fr 60px;gap:10px;align-items:center;font-size:12.5px;margin:6px 0}
+.ag-tl .track{position:relative;height:12px;background:var(--line-2);border-radius:3px}
+.ag-tl .bar{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--ink)}
+.ag-tl .bar.skipped{background:var(--line)}
+.ag-kv{display:grid;grid-template-columns:150px 1fr;gap:4px 12px;font-size:13px}
+.ag-kv dt{color:var(--muted)} .ag-kv dd{margin:0;word-break:break-word}
+@media (max-width:900px){.ag-flow{grid-template-columns:1fr}.ag-arrow{transform:rotate(90deg);height:20px}.ag-tl .row{grid-template-columns:110px 1fr 44px}}
+/* ---------- FULL GRAPH (deptree) : scoped under .fg ---------- */
+.fg{--fg-bg:#f7f7f5;--fg-panel:#fff;--fg-ink:#111827;--fg-muted:#6b7280;--fg-faint:#a1a1aa;--fg-line:#e5e7eb;--fg-hover:#f3f4f6;--fg-sel:#eef2ff;--fg-accent:#1d4ed8;--fg-edge:#c7c9cc;
+  --fg-crit:#b42318;--fg-high:#c4320a;--fg-med:#b54708;--fg-low:#175cd3;--fg-prod:#4b5563;--fg-dev:#c4c7cc;--fg-opt:#a3a3a3;--fg-img:#0e7490;--fg-ci:#64748b;--fg-root:#111827;
+  border:1px solid var(--fg-line);border-radius:8px;background:var(--fg-panel);overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:560px}
+.fg-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--fg-line);font-size:12.5px;color:var(--fg-muted)}
+.fg-bar select,.fg-bar input[type=search]{font:inherit;font-size:12.5px;color:var(--fg-ink);border:1px solid var(--fg-line);border-radius:6px;padding:6px 8px;background:#fff}
+.fg-bar label{display:inline-flex;gap:5px;align-items:center}
+.fg-seg{display:inline-flex;border:1px solid var(--fg-line);border-radius:6px;overflow:hidden}
+.fg-seg button{appearance:none;border:0;background:#fff;font:inherit;font-size:12.5px;padding:6px 12px;cursor:pointer;color:var(--fg-muted)}
+.fg-seg button.on{background:var(--fg-ink);color:#fff}
+.fg-body{flex:1;min-height:0;display:flex}
+.fg-stage{flex:1;min-width:0;position:relative;background:var(--fg-bg)}
+.fg-stage canvas{display:block;width:100%;height:100%;cursor:grab}
+.fg-stage canvas.drag{cursor:grabbing}
+.fg-tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--fg-line);border-radius:6px;padding:6px 8px;font-size:12px;display:none;max-width:340px;box-shadow:0 2px 6px rgba(0,0,0,.06);color:var(--fg-ink)}
+.fg-tip span{color:var(--fg-muted)}
+.fg-legend{position:absolute;left:10px;bottom:10px;background:#fff;border:1px solid var(--fg-line);border-radius:6px;padding:8px 10px;font-size:11.5px;color:var(--fg-muted);line-height:1.7}
+.fg-legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.fg-zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.fg-zoom button{width:30px;height:30px;border:1px solid var(--fg-line);background:#fff;border-radius:6px;cursor:pointer;font-size:15px;color:var(--fg-ink)}
+.fg-zoom button:hover{background:var(--fg-hover)}
+.fg-find{position:absolute;left:10px;top:10px;width:280px;max-width:calc(100% - 60px)}
+.fg-find input{width:100%;font:inherit;font-size:12.5px;border:1px solid var(--fg-line);border-radius:6px;padding:7px 9px;background:#fff;color:var(--fg-ink)}
+.fg-res{background:#fff;border:1px solid var(--fg-line);border-top:0;max-height:280px;overflow:auto;display:none;border-radius:0 0 6px 6px}
+.fg-res div{padding:5px 9px;cursor:pointer;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;gap:6px;align-items:center}
+.fg-res div:hover{background:var(--fg-hover)}
+.fg-hint{position:absolute;right:10px;bottom:10px;color:var(--fg-faint);font-size:11px}
+.fg-side{width:360px;flex:none;border-left:1px solid var(--fg-line);overflow:auto;background:#fff;font-size:13px;color:var(--fg-ink)}
+.fg-side section{padding:14px 16px;border-bottom:1px solid var(--fg-line)}
+.fg-side h3{margin:0;font-size:15px;word-break:break-all;font-weight:650}
+.fg-side h4{margin:0 0 8px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-muted);font-weight:600}
+.fg-side dl{display:grid;grid-template-columns:92px 1fr;gap:3px 10px;margin:0}
+.fg-side dt{color:var(--fg-muted)} .fg-side dd{margin:0;word-break:break-all}
+.fg-side ul{list-style:none;margin:0;padding:0}
+.fg-side li{padding:3px 0;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.fg-side li .l{display:flex;gap:6px;align-items:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fg-side .path{display:block;padding:5px 0;border-bottom:1px dashed var(--fg-line);font-size:12px;word-break:break-word}
+.fg-side .path:last-child{border-bottom:0}
+.fg-link{cursor:pointer;color:var(--fg-ink)} .fg-link:hover{color:var(--fg-accent);text-decoration:underline}
+.fg-dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
+.fg-tag{font-size:11px;color:var(--fg-muted);border:1px solid var(--fg-line);border-radius:4px;padding:0 5px;white-space:nowrap}
+.fg-muted{color:var(--fg-muted)}
+.fg-num{display:flex;gap:18px;flex-wrap:wrap}
+.fg-num div b{display:block;font-size:18px;font-weight:650;font-variant-numeric:tabular-nums}
+.fg-num div span{font-size:11.5px;color:var(--fg-muted)}
+.fg-bars div{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;font-size:12px;margin-bottom:4px}
+.fg-bars .t{height:6px;background:var(--fg-hover);border-radius:3px;overflow:hidden} .fg-bars .t span{display:block;height:100%}
+.fg-table{overflow:auto;flex:1}
+.fg-table table{border-collapse:collapse;width:100%;font-size:12.5px}
+.fg-table th,.fg-table td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--fg-line);white-space:nowrap}
+.fg-table th{position:sticky;top:0;background:#fff;color:var(--fg-muted);font-weight:600;cursor:pointer;user-select:none}
+.fg-table td.n,.fg-table th.n{text-align:right;font-variant-numeric:tabular-nums}
+.fg-table tbody tr{cursor:pointer} .fg-table tbody tr:hover{background:var(--fg-hover)} .fg-table tbody tr.sel{background:var(--fg-sel)}
+.fg-empty{padding:48px 24px;text-align:center;color:var(--fg-muted)}
+@media (max-width:900px){.fg{height:auto}.fg-body{flex-direction:column}.fg-stage{height:62vh;flex:none}.fg-side{width:auto;border-left:0;border-top:1px solid var(--fg-line)}.fg-legend,.fg-hint{display:none}}
 </style>
 </head>
 <body>
@@ -370,13 +496,14 @@ function openFindingDrawer(id){ const f = F.find(x => x.id === id); if (f) openD
 function bindFindingLinks(root){ root.querySelectorAll('[data-fid]').forEach(n => n.onclick = e => { e.stopPropagation(); openFindingDrawer(n.dataset.fid); }); }
 
 /* ================= router ================= */
-const TABS = [['journey','The Journey'],['files','Files'],['discovery','How We Discovered'],['chain','Supply Chain'],['graph','Dependency Graph'],['vulns','Vulnerabilities'],['tamper','Suspicious Changes'],['findings','All Findings'],['report','Final Report']];
+const MORE_TABS = ['files','discovery','chain'];
+const TABS = [['journey','The Journey'],['findings','All Findings'],['vulns','Vulnerabilities'],['tamper','Suspicious Changes'],['fullgraph','Full Graph'],['graph','Dependency Graph'],['fixes','Fixes'],['agents','Agents'],['report','Final Report'],['files','Files'],['discovery','How We Discovered'],['chain','Supply Chain']];
 async function route(){
   closeDrawer();
   const parts = location.hash.replace(/^#\/?/, '').split('/');
   if (parts[0] === 'scan' && parts[1]) return scanView(parts[1]);
   if (parts[0] === 'r' && parts[1]) {
-    if (SLUG !== parts[1] || !R) { $('#main').innerHTML = '<div class="empty"><span class="spin"></span> Loading report…</div>'; R = await api('/api/report/' + parts[1]); F = R.findings; SLUG = parts[1]; }
+    if (SLUG !== parts[1] || !R) { $('#main').innerHTML = '<div class="empty"><span class="spin"></span> Loading report…</div>'; R = await api('/api/report/' + parts[1]); F = R.findings; SLUG = parts[1]; FIX = await api('/api/report/' + SLUG + '/fixes').catch(() => null); }
     return resultView(parts[2] || 'journey');
   }
   landing();
@@ -391,7 +518,7 @@ async function landing(){
   $('#main').innerHTML = `<div class="landing view">
     <div class="lhero">
       <div>
-        <span class="kicker">🛡️ Agentic AI · Software supply-chain security</span>
+        <span class="kicker">Software supply-chain security</span>
         <h1>See every piece your app is <em>made of</em>, and catch the bad ones.</h1>
         <p>Modern apps are assembled from hundreds of open-source packages written by strangers. The Guardian maps every one, checks it against known-bad lists, looks for signs of tampering, and explains what it found in plain words.</p>
         <form class="scanbox" id="scanForm">
@@ -437,7 +564,8 @@ const STEP_INFO = {
   fetch:['📥','Like collecting the recipe before cooking: we download the project exactly as it is on GitHub.'],
   discover:['🧾','Like reading the ingredients label: which packages did the developers choose, and which came along with them?'],
   sbom:['🌳','We draw the family tree: who depends on whom. This becomes the SBOM, the official parts list.'],
-  vulns:['🚨','Every ingredient is checked against public recall lists of known security problems and malware.'],
+  vulns:['🚨','Every ingredient is checked against three public lists of known security problems and malware (OSV.dev, GitHub Advisory DB, deps.dev).'],
+  intel:['🎯','We check whether anyone is actually exploiting these problems (CISA KEV, EPSS), and whether each package is still maintained.'],
   tamper:['🕵️','We look for things no recall list knows yet: look-alike names, secret install programs, odd download sources, risky build steps.'],
   compare:['🔍','We compare with the last known-good version. Anything that changed without explanation is suspicious.'],
   ai:['🤖','An AI writes plain-English explanations, but only from the evidence above. It cannot change the scores.'],
@@ -453,7 +581,7 @@ async function scanView(jid){
     <h2 style="font-size:28px;font-weight:800;margin-top:6px" id="scTitle">The Guardian is at work</h2>
     <div class="muted" id="scSub">Follow each step as it happens. Elapsed <b id="scT">0s</b></div>
     <div class="pbar"><div id="scBar" style="width:2%"></div></div>
-    <div class="tl">${STEPS.map(([id,t])=>`<div class="tstep pending" id="st-${id}"><div class="ico">${STEP_INFO[id][0]}</div>
+    <div class="tl">${STEPS.map(([id,t],i)=>`<div class="tstep pending" id="st-${id}"><div class="ico">${i+1}</div>
       <div><h4>${t} <span class="st"></span></h4><div class="lay">${STEP_INFO[id][1]}</div><div class="msg"></div><div class="met"></div></div></div>`).join('')}</div>
     <div id="scDone"></div></div>`;
   clearInterval(poll);
@@ -466,17 +594,21 @@ async function scanView(jid){
     j.events.forEach(ev => { state[ev.step] = state[ev.step] || {}; state[ev.step].status = ev.status; state[ev.step].msg = ev.message; if (Object.keys(ev.metrics).length) state[ev.step].metrics = ev.metrics; });
     let done = 0;
     STEPS.forEach(([id]) => { const el = $('#st-' + id), s = state[id]; if (!s) return;
-      el.className = 'tstep ' + s.status; if (s.status === 'done') done++;
-      el.querySelector('.st').innerHTML = s.status === 'running' ? '<span class="spin"></span>' : '<span style="color:var(--ev)">✓</span>';
+      el.className = 'tstep ' + s.status; if (s.status === 'done' || s.status === 'error') done++;
+      el.querySelector('.st').innerHTML = s.status === 'running' ? '<span class="spin"></span>' : s.status === 'error' ? '<span class="st-err">!</span>' : '<span style="color:var(--ev)">✓</span>';
       el.querySelector('.msg').textContent = s.msg;
       el.querySelector('.met').innerHTML = Object.entries(s.metrics || {}).filter(([k,v]) => v !== null && v !== undefined && v !== '').map(([k,v]) => `<span class="chip">${esc(k)}: <b>${esc(typeof v === 'number' ? fmt(v) : v)}</b></span>`).join('');
     });
     $('#scBar').style.width = Math.max(4, 100 * done / STEPS.length) + '%';
-    if (j.status === 'done') { clearInterval(poll); $('#scTitle').textContent = 'Scan complete'; $('#scBar').style.width = '100%';
-      $('#scDone').innerHTML = `<div class="card pad" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><b>Your results are ready.</b><div class="small muted">Start with The Journey for a guided tour.</div></div><a class="btn primary" href="#/r/${j.slug}/journey">See the results →</a></div>`;
-      R = null; setTimeout(() => { if (location.hash.startsWith('#/scan/' + jid)) location.hash = '#/r/' + j.slug + '/journey'; }, 1800); }
+    const degraded = STEPS.filter(([id]) => state[id] && state[id].status === 'error').map(([id, t]) => t);
+    if (j.status === 'done') { clearInterval(poll); $('#scTitle').textContent = degraded.length ? 'Scan complete, with warnings' : 'Scan complete'; $('#scBar').style.width = '100%';
+      $('#scDone').innerHTML = `<div class="card pad scan-result ${degraded.length ? 'warn' : ''}"><div><b>${degraded.length ? 'Results are ready, but some checks could not run.' : 'Your results are ready.'}</b><div class="small muted">${degraded.length ? 'Not completed: ' + degraded.map(esc).join(', ') + '. Everything else is complete; run the scan again later to fill the gaps.' : 'Start with The Journey for a guided tour.'}</div></div><a class="btn primary" href="#/r/${j.slug}/journey">See the results →</a></div>`;
+      R = null; if (!degraded.length) setTimeout(() => { if (location.hash.startsWith('#/scan/' + jid)) location.hash = '#/r/' + j.slug + '/journey'; }, 1800); }
     if (j.status === 'error') { clearInterval(poll); $('#scTitle').textContent = 'Scan stopped';
-      $('#scDone').innerHTML = `<div class="card pad" style="border-color:#fecaca"><b style="color:var(--crit)">${esc(j.error)}</b><div style="margin-top:10px"><a class="btn" href="#/">← Try another repository</a></div></div>`; }
+      const fs = j.failed_step && $('#st-' + j.failed_step);
+      if (fs) { fs.className = 'tstep error'; fs.querySelector('.st').innerHTML = '<span class="st-err">!</span>'; fs.querySelector('.msg').textContent = j.error; }
+      const stepName = (STEPS.find(([id]) => id === j.failed_step) || [])[1];
+      $('#scDone').innerHTML = `<div class="card pad scan-result err"><div><b>${stepName ? 'Stopped at “' + esc(stepName) + '”' : 'The scan could not finish'}</b><div class="small" style="margin-top:4px">${esc(j.error)}</div>${j.detail ? `<details class="xs muted" style="margin-top:8px"><summary>Technical detail</summary><code>${esc(j.detail)}</code></details>` : ''}</div><a class="btn" href="#/">← Try another repository</a></div>`; }
   };
   tick(); poll = setInterval(tick, 700);
 }
@@ -490,13 +622,22 @@ function resultView(tab){
   const nNew = F.filter(f => f.changed).length;
   const nTamper = F.filter(f => !['vulnerability','malicious-package'].includes(f.category)).length;
   const nV = new Set(F.filter(f => ['vulnerability','malicious-package'].includes(f.category)).map(f => f.component)).size;
-  const counts = {vulns: nV, tamper: nTamper, findings: F.length};
+  const counts = {vulns: nV, tamper: nTamper, findings: F.length, fixes: (FIX && FIX.plan.fixes.length) || null};
   $('#tabs').classList.remove('hidden');
-  $('#tabs').innerHTML = TABS.map(([id,t]) => `<button class="tab ${id===tab?'active':''}" data-t="${id}">${t}${counts[id]!=null?` <span class="n">${fmt(counts[id])}</span>`:''}</button>`).join('');
-  $('#tabs').querySelectorAll('.tab').forEach(b => b.onclick = () => location.hash = `#/r/${SLUG}/${b.dataset.t}`);
-  const fn = {journey, files, discovery, chain, graph, vulns, tamper, findings, report}[tab] || journey;
+  const LABEL = {journey:'Overview', fullgraph:'Full graph', graph:'Risk paths'};
+  const tabBtn = ([id,t]) => `<button class="tab ${id===tab?'active':''}" data-t="${id}">${LABEL[id]||t}${counts[id]!=null?` <span class="n">${fmt(counts[id])}</span>`:''}</button>`;
+  const main = TABS.filter(([id]) => !MORE_TABS.includes(id)), more = TABS.filter(([id]) => MORE_TABS.includes(id));
+  const moreActive = more.find(([id]) => id === tab);
+  $('#tabs').innerHTML = main.map(tabBtn).join('') + `<div class="tabmore"><button class="tab ${moreActive?'active':''}" id="moreBtn">${moreActive ? esc(LABEL[moreActive[0]]||moreActive[1]) : 'More'} ▾</button><div class="tabmenu hidden" id="moreMenu">${more.map(([id,t]) => `<button data-t="${id}" class="${id===tab?'on':''}">${esc(LABEL[id]||t)}</button>`).join('')}</div></div>`;
+  $('#tabs').querySelectorAll('[data-t]').forEach(b => b.onclick = () => location.hash = `#/r/${SLUG}/${b.dataset.t}`);
+  $('#moreBtn').onclick = e => { e.stopPropagation(); const m = $('#moreMenu'), r = e.currentTarget.getBoundingClientRect();
+    m.style.top = r.bottom + 'px'; m.style.left = Math.min(r.left, innerWidth - 240) + 'px'; m.classList.toggle('hidden'); };
+  document.addEventListener('click', () => { const m = $('#moreMenu'); if (m) m.classList.add('hidden'); }, {once: true});
+  const fn = {journey, files, discovery, chain, graph, fullgraph: window.fullgraph, agents: agentsView, fixes: fixesView, vulns, tamper, findings, report}[tab] || journey;
   $('#main').innerHTML = '<div class="view" id="v"></div>';
   fn($('#v'));
+  const deg = (R.agents && R.agents.degraded) || [];
+  if (deg.length) $('#v').insertAdjacentHTML('afterbegin', `<div class="degraded-bar"><b>Partial results.</b> ${deg.map(d => `${esc(d.agent)}: ${esc(d.error)}`).join(' · ')} <a style="margin-left:auto" href="#/r/${SLUG}/agents">Details</a></div>`);
   window.scrollTo({top:0});
 }
 const goTab = t => location.hash = `#/r/${SLUG}/${t}`;
@@ -543,10 +684,10 @@ function journey(el){
        <div class="eyebrow" style="margin:6px 0 8px">Fix first</div>${(ai.length?ai:F).slice(0,5).map((f,i)=>`<div class="fitem" data-fid="${esc(f.id)}" style="border-radius:10px"><div class="top"><b class="small">${i+1}.</b> ${badge(f)} ${f.changed?'<span class="chip new">NEW</span>':''}</div><div class="t">${esc(f.title)}</div><div class="c">${esc(f.component)}</div></div>`).join('')}`, go:['report','Open the final report']},
   ];
   chap = Math.min(chap, C.length - 1);
-  el.innerHTML = `<div class="journey"><div class="card jnav">${C.map((c,i)=>`<button data-c="${i}" class="${i===chap?'on':''}"><span class="k">${i+1}</span>${c.e} ${c.t}</button>`).join('')}</div><div class="card chapter" id="chapter"></div></div>`;
+  el.innerHTML = `<div class="journey"><div class="card jnav">${C.map((c,i)=>`<button data-c="${i}" class="${i===chap?'on':''}"><span class="k">${i+1}</span>${c.t}</button>`).join('')}</div><div class="card chapter" id="chapter"></div></div>`;
   const show = i => { chap = i; const c = C[i];
     el.querySelectorAll('.jnav button').forEach((b,j) => b.classList.toggle('on', j===i));
-    $('#chapter').innerHTML = `<div class="num">STEP ${i+1} OF ${C.length}</div><h2>${c.e} ${c.t}</h2><p class="lead">${c.lead}</p>
+    $('#chapter').innerHTML = `<div class="num">STEP ${i+1} OF ${C.length}</div><h2>${c.t}</h2><p class="lead">${c.lead}</p>
       <div class="analogy"><span class="e">${c.an[0]}</span><div>${c.an[1]}</div></div>${c.body}
       <div class="chnav"><button class="btn" ${i===0?'disabled':''} id="pv">← Previous</button><div style="display:flex;gap:8px"><a class="btn" id="dg">${c.go[1]} ↗</a><button class="btn primary" id="nx">${i===C.length-1?'Finish':'Next step →'}</button></div></div>`;
     $('#pv').onclick = () => show(i-1); $('#nx').onclick = () => i < C.length-1 ? show(i+1) : goTab('report'); $('#dg').onclick = () => goTab(c.go[0]);
@@ -706,7 +847,7 @@ function chain(el){
 let gMode = 'tree', gOnly = true;
 function graph(el){
   const G = R.graph;
-  el.innerHTML = `<div class="vhead"><div><h2>Dependency graph</h2><p>Your app in the middle of its supply chain: the packages the developers chose, and the exact path to every risky or newly-appeared package.</p></div></div>
+  el.innerHTML = `<div class="vhead"><div><h2>Risk paths</h2><p>Your app in the middle of its supply chain: the packages the developers chose, and the exact path to every risky or newly-appeared package.</p></div><a class="btn" href="#/r/${SLUG}/fullgraph">Open full graph →</a></div>
     ${plain('Each dot is a package; an arrow means "needs". <b>Red</b> dots are risky. Bigger means riskier. Follow the arrows from the app to see <i>how</i> a risky package got in. Click a dot for details.')}
     <div class="card gcard">
       <div class="toolbar"><div class="seg"><button data-m="tree" class="${gMode==='tree'?'on':''}">🌲 Tree view</button><button data-m="web" class="${gMode==='web'?'on':''}">🕸️ Network view</button></div>
@@ -781,6 +922,489 @@ function whyBox(n){
     <div style="margin-top:6px"><b>Required by</b><ul>${req}${more}</ul></div>${rule}</div>`;
 }
 
+/* ================= 5b. FULL GRAPH (deptree engine) =================
+   Every manifest in the repo (npm, containers, CI ...) as one radial map: project -> ecosystem
+   groups -> manifests -> packages by depth. Guardian findings are overlaid on the nodes. */
+(function(){
+  const PROJ = '__project__', GRP = '__group__:', MRING = 2;
+  const GL = {npm:'npm', docker:'containers', 'github-actions':'CI workflows', pypi:'python', golang:'go', maven:'java', gem:'ruby', composer:'php', cargo:'rust', nuget:'.NET'};
+  const RISK = ['Critical','High','Medium','Low'];
+  const RANK = {Critical:4, High:3, Medium:2, Low:1, Info:0};
+  const S = {D:null, slug:null, N:{}, OUT:{}, IN:{}, L:null, sel:null, hover:null, HI:null, cam:{k:1,x:0,y:0}, view:'graph', CV:{}, byNode:{}, sortK:'risk', sortD:-1};
+  const syn = id => id === PROJ || id.startsWith(GRP);
+  const lab = n => n.id === PROJ ? S.D.project : n.type === 'group' ? n.name : n.type === 'application' ? n.id.replace(/^app:[^/]+\//, '') : n.name;
+  const full = n => lab(n) + (n.version && n.type !== 'application' && !syn(n.id) ? '@' + n.version : '');
+  const short = n => { const p = lab(n).split('/'), last = p[p.length-1]; return p.length > 1 && /^(package\.json|Dockerfile.*|docker-compose.*|pyproject\.toml|go\.mod|pom\.xml|requirements.*\.txt)$/.test(last) ? p.slice(-2).join('/') : last; };
+
+  function colors(el){ const cs = getComputedStyle(el); ['bg','panel','ink','muted','faint','line','accent','edge','crit','high','med','low','prod','dev','opt','img','ci','root'].forEach(k => S.CV[k] = cs.getPropertyValue('--fg-' + k).trim()); }
+
+  // ---- Guardian findings -> graph nodes
+  function mapFindings(){
+    S.byNode = {};
+    const idx = {};
+    for (const n of S.D.nodes) {
+      const keys = [];
+      if (n.type === 'package' && n.version) keys.push(`${n.name}@${n.version}`);
+      if (n.type === 'application') { keys.push(lab(n)); if (n.version) keys.push(`${n.name}@${n.version}`); }
+      if (n.type === 'container-image') keys.push(n.name, `${n.name}:${n.version}`);
+      keys.forEach(k => (idx[k] ||= []).push(n.id));
+    }
+    for (const f of F) for (const id of (idx[f.component] || [])) (S.byNode[id] ||= []).push(f);
+    for (const k in S.byNode) S.byNode[k].sort((a,b) => b.risk_score - a.risk_score);
+  }
+  const worst = id => { const fs = S.byNode[id]; return fs && fs.length ? fs[0].risk_level : null; };
+
+  function scopeColor(n){
+    const s = n.scopes || [];
+    if (n.type === 'container-image') return S.CV.img;
+    if (n.type === 'github-action') return S.CV.ci;
+    if (s.includes('prod') || s.includes('runtime')) return S.CV.prod;
+    if (s.includes('optional') || s.includes('peer')) return S.CV.opt;
+    return S.CV.dev;
+  }
+  function color(n){
+    if (syn(n.id) || n.type === 'application') { const w = worst(n.id); return w && $('#fgColor').value === 'risk' ? riskColor(w) : S.CV.root; }
+    const mode = $('#fgColor').value;
+    if (mode === 'risk') { const w = worst(n.id); return w ? riskColor(w) : (n.scopes||[]).some(s => s==='prod'||s==='runtime') ? '#9ca3af' : '#d4d4d8'; }
+    if (mode === 'depth') { const t = Math.min(1, (S.L.depth[n.id] - MRING - 1) / Math.max(1, S.L.maxDepth - MRING - 1)); return `hsl(220 45% ${30 + t * 45}%)`; }
+    return scopeColor(n);
+  }
+  const riskColor = r => ({Critical:S.CV.crit, High:S.CV.high, Medium:S.CV.med, Low:S.CV.low}[r] || S.CV.faint);
+
+  function visible(e){
+    if (syn(e.from)) { if (!$('#fgEco').value) return true; return (S.OUT[e.to]||[]).some(visible); }
+    if (!$('#fgDev').checked && e.scope === 'dev') return false;
+    const f = $('#fgEco').value, t = S.N[e.to];
+    if (f && t && t.type !== 'application' && t.ecosystem !== f) return false;
+    if ($('#fgRisky').checked && t && t.type !== 'application' && !S.riskyKeep.has(e.to)) return false;
+    return true;
+  }
+
+  // keep only nodes that are risky or lie on a path to a risky node
+  function computeRiskyKeep(){
+    const keep = new Set(), q = Object.keys(S.byNode).filter(id => S.N[id]);
+    q.forEach(id => keep.add(id));
+    while (q.length) { const n = q.pop(); for (const e of S.IN[n] || []) if (!keep.has(e.from)) { keep.add(e.from); q.push(e.from); } }
+    S.riskyKeep = keep;
+  }
+
+  function layout(fit){
+    const depth = {[PROJ]:0}, parent = {}, kids = {[PROJ]:[]}, order = [PROJ];
+    for (let i = 0; i < order.length; i++) { const n = order[i];
+      for (const e of S.OUT[n] || []) { if (e.to in depth || !visible(e)) continue; depth[e.to] = depth[n] + 1; parent[e.to] = n; kids[e.to] = []; kids[n].push(e.to); order.push(e.to); } }
+    const w = {};
+    for (let i = order.length - 1; i >= 0; i--) { const n = order[i]; w[n] = kids[n].length ? kids[n].reduce((a,c) => a + w[c], 0) : 1; }
+    const cnt = []; order.forEach(n => cnt[depth[n]] = (cnt[depth[n]] || 0) + 1);
+    const radii = [0]; for (let d = 1; d < cnt.length; d++) radii[d] = Math.max(radii[d-1] + (d === 1 ? 110 : d === 2 ? 120 : 110), cnt[d] * 9 / (2 * Math.PI));
+    const GAP = .09, span = {[PROJ]:[-Math.PI/2 + GAP, 3*Math.PI/2 - GAP]}, pos = {};
+    for (const n of order) { const [a0, a1] = span[n]; const wt = c => depth[n] < MRING ? Math.sqrt(w[c]) : w[c];
+      const tot = kids[n].reduce((a,c) => a + wt(c), 0) || 1; let cur = a0;
+      for (const c of kids[n]) { const s = (a1 - a0) * wt(c) / tot; span[c] = [cur, cur + s]; cur += s; }
+      const a = (a0 + a1) / 2, r = radii[depth[n]]; pos[n] = {x: Math.cos(a) * r, y: Math.sin(a) * r, a}; }
+    const dependents = {}; for (const n of order) dependents[n] = (S.IN[n] || []).filter(e => e.from in depth && !syn(e.from)).length;
+    S.L = {pos, depth, parent, order, radii, dependents, maxDepth: cnt.length - 1};
+    if (S.sel && !(S.sel in depth)) S.sel = null;
+    highlight(); legend();
+    if (fit) fitView(); else draw();
+  }
+  const radius = id => { if (id === PROJ) return 9; const n = S.N[id]; if (n.type === 'group') return 6.5; if (n.type === 'application') return 6;
+    const base = 2.6 + Math.min(9, Math.sqrt(S.L.dependents[id] || 0) * 1.25); return worst(id) ? base + 1.5 : base; };
+
+  function highlight(){
+    if (!S.sel || !S.L || !(S.sel in S.L.depth)) { S.HI = null; return; }
+    const anc = new Set([S.sel]), desc = new Set([S.sel]); let q = [S.sel];
+    while (q.length) { const n = q.pop(); for (const e of S.IN[n] || []) if (!anc.has(e.from) && e.from in S.L.depth && visible(e)) { anc.add(e.from); q.push(e.from); } }
+    q = [S.sel];
+    while (q.length) { const n = q.pop(); for (const e of S.OUT[n] || []) if (!desc.has(e.to) && e.to in S.L.depth && visible(e)) { desc.add(e.to); q.push(e.to); } }
+    S.HI = {anc, desc};
+  }
+
+  // ---- canvas
+  let raf = 0; const draw = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; paint(); }); };
+  function canvas(){ return document.getElementById('fgCanvas'); }
+  function fitView(){ const c = canvas(); if (!c) return; const r = c.getBoundingClientRect(); const R0 = (S.L.radii[S.L.radii.length-1] || 100) + 60;
+    S.cam.k = Math.min(r.width, r.height) / (2 * R0); S.cam.x = r.width / 2; S.cam.y = r.height / 2; draw(); }
+  function focus(id, zoom){ const c = canvas(), p = S.L && S.L.pos[id]; if (!c || !p) return; const r = c.getBoundingClientRect();
+    if (zoom) S.cam.k = Math.max(S.cam.k, 1.2); S.cam.x = r.width / 2 - p.x * S.cam.k; S.cam.y = r.height / 2 - p.y * S.cam.k; draw(); }
+  function paint(){
+    const c = canvas(); if (!c || !S.L) return; const ctx = c.getContext('2d');
+    const dpr = devicePixelRatio || 1, W = c.width / dpr, H = c.height / dpr, k = S.cam.k, px = 1 / k, P = S.L.pos, CV = S.CV;
+    ctx.setTransform(dpr,0,0,dpr,0,0); ctx.fillStyle = CV.bg; ctx.fillRect(0,0,W,H);
+    ctx.translate(S.cam.x, S.cam.y); ctx.scale(k, k);
+    ctx.strokeStyle = CV.line; ctx.lineWidth = px;
+    for (let d = 1; d < S.L.radii.length; d++) { ctx.beginPath(); ctx.arc(0, 0, S.L.radii[d], 0, 2*Math.PI); ctx.stroke(); }
+    const roomy = (S.L.radii[MRING] || 0) * k > 40;
+    if (roomy) { ctx.fillStyle = CV.faint; ctx.font = `${11*px}px system-ui,sans-serif`; ctx.textAlign = 'left';
+      for (let d = MRING; d < S.L.radii.length; d++) ctx.fillText(d === MRING ? 'manifests' : `depth ${d - MRING}`, 4*px, -S.L.radii[d] - 4*px); }
+    ctx.strokeStyle = CV.edge; ctx.globalAlpha = S.HI ? .12 : .5; ctx.lineWidth = .8 * px; ctx.beginPath();
+    for (const n of S.L.order) { const p = S.L.parent[n]; if (p === undefined) continue; ctx.moveTo(P[p].x, P[p].y); ctx.lineTo(P[n].x, P[n].y); }
+    ctx.stroke(); ctx.globalAlpha = 1;
+    if (S.HI) {
+      const set = (ids, col, wdt) => { ctx.strokeStyle = col; ctx.lineWidth = wdt * px; ctx.beginPath();
+        for (const a of ids) for (const e of S.OUT[a] || []) { if (!ids.has(e.to) || !(e.to in P) || !visible(e)) continue;
+          const s = P[a], t = P[e.to]; ctx.moveTo(s.x, s.y); ctx.quadraticCurveTo((s.x+t.x)/2*.85, (s.y+t.y)/2*.85, t.x, t.y); }
+        ctx.stroke(); };
+      ctx.globalAlpha = .55; set(S.HI.desc, CV.muted, 1); ctx.globalAlpha = .9; set(S.HI.anc, CV.accent, 1.6); ctx.globalAlpha = 1;
+    }
+    const x0 = -S.cam.x / k - 20, y0 = -S.cam.y / k - 20, x1 = (W - S.cam.x) / k + 20, y1 = (H - S.cam.y) / k + 20;
+    const inView = p => p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1;
+    // non-risky first, risky on top
+    const ordered = S.L.order.slice().sort((a,b) => (worst(a) ? RANK[worst(a)] : -1) - (worst(b) ? RANK[worst(b)] : -1));
+    for (const id of ordered) {
+      const p = P[id]; if (!inView(p)) continue; const n = S.N[id], r = Math.max(radius(id), 1.6 * px);
+      ctx.globalAlpha = !S.HI || S.HI.anc.has(id) || S.HI.desc.has(id) ? 1 : .15; ctx.fillStyle = color(n); ctx.beginPath();
+      if (n.type === 'application' || n.type === 'group') ctx.rect(p.x - r, p.y - r, 2*r, 2*r);
+      else if (n.type === 'container-image') { ctx.moveTo(p.x, p.y - r*1.2); ctx.lineTo(p.x + r*1.2, p.y); ctx.lineTo(p.x, p.y + r*1.2); ctx.lineTo(p.x - r*1.2, p.y); ctx.closePath(); }
+      else ctx.arc(p.x, p.y, r, 0, 2*Math.PI);
+      ctx.fill();
+      if (id === S.sel || id === S.hover) { ctx.strokeStyle = CV.ink; ctx.lineWidth = 2*px; ctx.beginPath(); ctx.arc(p.x, p.y, r + 3*px, 0, 2*Math.PI); ctx.stroke(); }
+    }
+    ctx.globalAlpha = 1;
+    const fs = 11.5 * px;
+    for (const id of S.L.order) {
+      const d = S.L.depth[id], p = P[id]; if (!inView(p)) continue;
+      let show = d === 0 || (d === 1 && (S.L.radii[1] || 0) * k > 20) || (d === MRING && roomy) || id === S.sel || id === S.hover;
+      if (!show && S.HI && S.HI.anc.has(id)) show = true;
+      if (!show && k > 2.2) show = true;
+      if (!show && k > .9 && ((S.L.dependents[id] || 0) >= 8 || (worst(id) && RANK[worst(id)] >= 3))) show = true;
+      if (!show) continue;
+      const n = S.N[id], r = radius(id), text = syn(id) ? lab(n) : d === MRING ? short(n) : full(n);
+      ctx.globalAlpha = !S.HI || S.HI.anc.has(id) || S.HI.desc.has(id) ? 1 : .25;
+      ctx.font = `${id === S.sel || syn(id) || d === MRING ? '600 ' : ''}${fs}px system-ui,sans-serif`;
+      ctx.lineWidth = 3*px; ctx.strokeStyle = CV.bg; ctx.fillStyle = id === S.sel ? CV.accent : worst(id) && RANK[worst(id)] >= 3 ? riskColor(worst(id)) : CV.ink;
+      if (id === PROJ) { ctx.textAlign = 'center'; const ty = p.y + r + 14*px; ctx.strokeText(text, p.x, ty); ctx.fillText(text, p.x, ty); continue; }
+      if (n.type === 'group') { const ux = Math.cos(p.a), uy = Math.sin(p.a); ctx.textAlign = Math.abs(ux) < .3 ? 'center' : ux > 0 ? 'left' : 'right';
+        const tx = p.x + ux * (r + 6*px), ty = p.y + uy * (r + 8*px) + fs * .35; ctx.strokeText(text, tx, ty); ctx.fillText(text, tx, ty); continue; }
+      const right = Math.cos(p.a) >= 0; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(right ? p.a : p.a + Math.PI);
+      ctx.textAlign = right ? 'left' : 'right'; const tx = right ? r + 4*px : -r - 4*px; ctx.strokeText(text, tx, fs*.35); ctx.fillText(text, tx, fs*.35); ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function hit(mx, my){ if (!S.L) return null; const wx = (mx - S.cam.x) / S.cam.k, wy = (my - S.cam.y) / S.cam.k; let best = null, bd = Infinity;
+    for (const id of S.L.order) { const p = S.L.pos[id], dx = p.x - wx, dy = p.y - wy, d = dx*dx + dy*dy, r = Math.max(radius(id), 2 / S.cam.k) + 4 / S.cam.k; if (d < r*r && d < bd) { bd = d; best = id; } }
+    return best; }
+
+  // global pointer handlers, installed once; they no-op when the canvas is not on screen
+  let drag = null;
+  window.addEventListener('mouseup', e => { const c = canvas(); if (!drag || !c) { drag = null; return; } const moved = drag.moved; drag = null; c.classList.remove('drag');
+    if (moved || e.target !== c) return; const r = c.getBoundingClientRect(); const id = hit(e.clientX - r.left, e.clientY - r.top); select(id && !syn(id) ? id : null); });
+  window.addEventListener('mousemove', e => { const c = canvas(); if (!c) return; const r = c.getBoundingClientRect();
+    if (drag) { const dx = e.clientX - drag.x, dy = e.clientY - drag.y; if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; c.classList.add('drag'); } S.cam.x = drag.cx + dx; S.cam.y = drag.cy + dy; draw(); return; }
+    const tip = document.getElementById('fgTip');
+    if (e.target !== c) { if (S.hover) { S.hover = null; tip.style.display = 'none'; draw(); } return; }
+    const id = hit(e.clientX - r.left, e.clientY - r.top); if (id !== S.hover) { S.hover = id; draw(); }
+    if (!id) { tip.style.display = 'none'; return; }
+    const n = S.N[id], fsN = (S.byNode[id] || []).length, d = S.L.depth[id];
+    tip.innerHTML = `<b>${esc(syn(id) ? lab(n) : full(n))}</b><br><span>${id === PROJ ? 'project' : n.type === 'group' ? (S.OUT[id]||[]).length + ' manifests' : n.type === 'application' ? 'manifest' : esc(n.ecosystem)}${d > MRING ? ' · depth ' + (d - MRING) : ''} · ${S.L.dependents[id] || 0} dependents${fsN ? ` · <b style="color:${riskColor(worst(id))}">${fsN} finding${fsN>1?'s':''}</b>` : ''}</span>`;
+    tip.style.display = 'block'; tip.style.left = Math.min(e.clientX - r.left + 14, r.width - tip.offsetWidth - 8) + 'px'; tip.style.top = Math.min(e.clientY - r.top + 14, r.height - tip.offsetHeight - 8) + 'px'; });
+
+  function bindCanvas(){
+    const c = canvas();
+    c.addEventListener('mousedown', e => { drag = {x:e.clientX, y:e.clientY, cx:S.cam.x, cy:S.cam.y, moved:false}; });
+    c.addEventListener('wheel', e => { e.preventDefault(); const r = c.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+      const k2 = Math.min(12, Math.max(.05, S.cam.k * Math.exp(-e.deltaY * .0015))); S.cam.x = mx - (mx - S.cam.x) * k2 / S.cam.k; S.cam.y = my - (my - S.cam.y) * k2 / S.cam.k; S.cam.k = k2; draw(); }, {passive:false});
+    c.addEventListener('dblclick', e => { const r = c.getBoundingClientRect(); const id = hit(e.clientX - r.left, e.clientY - r.top); if (id) { S.cam.k *= 1.8; focus(id); } });
+    const zoom = f => { const r = c.getBoundingClientRect(), mx = r.width/2, my = r.height/2, k2 = Math.min(12, Math.max(.05, S.cam.k * f)); S.cam.x = mx - (mx - S.cam.x) * k2 / S.cam.k; S.cam.y = my - (my - S.cam.y) * k2 / S.cam.k; S.cam.k = k2; draw(); };
+    $('#fgIn').onclick = () => zoom(1.4); $('#fgOut').onclick = () => zoom(1/1.4); $('#fgFit').onclick = fitView;
+    const size = () => { const r = c.getBoundingClientRect(), dpr = devicePixelRatio || 1; c.width = Math.max(1, r.width * dpr); c.height = Math.max(1, r.height * dpr); draw(); };
+    new ResizeObserver(size).observe(c.parentElement); size();
+  }
+
+  function legend(){
+    const mode = $('#fgColor').value; let rows = '';
+    if (mode === 'risk') rows = RISK.map(r => `<div><i style="background:${riskColor(r)}"></i>${r} finding</div>`).join('') + `<div><i style="background:#9ca3af"></i>no finding · production</div><div><i style="background:#d4d4d8"></i>no finding · dev only</div>`;
+    else if (mode === 'scope') rows = [['prod','production'],['dev','dev only'],['opt','optional / peer'],['img','container image'],['ci','CI action']].map(([k,t]) => `<div><i style="background:${S.CV[k]}"></i>${t}</div>`).join('');
+    else rows = `<div><i style="background:hsl(220 45% 30%)"></i>shallow</div><div><i style="background:hsl(220 45% 75%)"></i>deep</div>`;
+    $('#fgLegend').innerHTML = rows + '<div style="margin-top:4px">■ manifest · ◆ image · ● package</div><div>size = number of dependents</div>';
+  }
+
+  // ---- selection + side panel
+  function select(id, opts = {}){
+    S.sel = id; highlight(); draw(); side();
+    document.querySelectorAll('#fgTbody tr').forEach(tr => tr.classList.toggle('sel', tr.dataset.id === id));
+    if (id && opts.focus && S.view === 'graph') focus(id, true);
+  }
+  function paths(id, limit = 10){ const roots = new Set(S.D.roots), out = [], q = [[id]];
+    while (q.length && out.length < limit) { const p = q.shift(); if (roots.has(p[0])) { out.push(p); continue; }
+      for (const e of S.IN[p[0]] || []) if (!syn(e.from) && !p.includes(e.from)) q.push([e.from, ...p]); if (q.length > 40000) break; }
+    return out; }
+  const link = (id, t) => `<span class="fg-link" data-id="${esc(id)}">${esc(t ?? full(S.N[id]))}</span>`;
+  const dot = id => `<span class="fg-dot" style="background:${color(S.N[id])}"></span>`;
+  function side(){
+    const el = $('#fgSide'); if (!el) return;
+    if (!S.sel) { el.innerHTML = overview(); bindSide(el); return; }
+    const n = S.N[S.sel], deps = S.OUT[S.sel] || [], par = (S.IN[S.sel] || []).filter(e => !syn(e.from)), fs = S.byNode[S.sel] || [];
+    const pp = n.type === 'application' ? [] : paths(S.sel);
+    const row = (k, v) => v == null || v === '' ? '' : `<dt>${k}</dt><dd>${v}</dd>`;
+    const lst = (es, key) => es.length ? `<ul>${es.slice(0, 50).map(e => `<li><span class="l">${dot(e[key])}${link(e[key])}</span><span class="fg-muted">${esc(e.scope && !['prod','runtime','ci'].includes(e.scope) ? e.scope : '')} ${esc(e.declared_range || '')}</span></li>`).join('')}${es.length > 50 ? `<li class="fg-muted">… ${es.length - 50} more</li>` : ''}</ul>` : '<span class="fg-muted">none</span>';
+    const props = Object.entries(n.properties || {}).filter(([k]) => !['stages','local_builds','manifest'].includes(k)).map(([k,v]) => row(esc(k.replace(/_/g,' ')), `<code>${esc(typeof v === 'object' ? JSON.stringify(v) : v)}</code>`)).join('');
+    el.innerHTML = `<section><div class="fg-muted" style="font-size:12px">${esc(n.type === 'application' ? 'manifest' : n.type)} · ${esc(n.ecosystem)}</div>
+        <h3>${esc(lab(n))}${n.version && n.type !== 'application' ? ` <span class="fg-muted" style="font-weight:400">${esc(n.version)}</span>` : ''}</h3>
+        <div style="margin-top:6px;display:flex;gap:5px;flex-wrap:wrap">${(n.scopes||[]).map(s => `<span class="fg-tag">${esc(s)}</span>`).join('')}${n.type === 'application' ? '' : `<span class="fg-tag">${n.direct ? 'direct' : 'transitive'}</span>`}${n.properties?.version_unresolved ? '<span class="fg-tag">version unresolved</span>' : ''}</div>
+        <div style="margin-top:10px;display:flex;gap:6px"><button class="btn" id="fgClear" style="padding:6px 10px">Clear</button><button class="btn" id="fgCenter" style="padding:6px 10px">Center</button></div></section>
+      ${fs.length ? `<section><h4>Guardian findings (${fs.length})</h4>${fs.slice(0, 12).map(f => `<div class="fitem" data-fid="${esc(f.id)}" style="padding:7px 0;border-left:0;cursor:pointer">${badge(f)}<div class="t" style="font-size:12.5px">${esc(f.title)}</div></div>`).join('')}${fs.length > 12 ? `<div class="fg-muted" style="font-size:12px">… ${fs.length - 12} more in All Findings</div>` : ''}</section>` : ''}
+      <section><h4>Identity</h4><dl>${row('purl', n.purl ? `<code>${esc(n.purl)}</code>` : '')}${row('depth', n.type !== 'application' && n.min_depth != null ? n.min_depth : '')}
+        ${row('dependents', par.length)}${row('dependencies', deps.length)}${row('pulls in', S.HI ? (S.HI.desc.size - 1) + ' packages' : '')}
+        ${row('resolved', n.resolved ? `<code>${esc(n.resolved)}</code>` : '')}${row('integrity', n.integrity ? `<code>${esc(n.integrity.slice(0, 60))}${n.integrity.length > 60 ? '…' : ''}</code>` : '')}${props}</dl></section>
+      ${pp.length ? `<section><h4>How it got in · ${pp.length}${pp.length >= 10 ? '+' : ''} path${pp.length > 1 ? 's' : ''}</h4>${pp.map(p => `<span class="path">${p.map(x => link(x, S.N[x].type === 'application' ? lab(S.N[x]) : full(S.N[x]))).join(' › ')}</span>`).join('')}</section>` : ''}
+      ${par.length ? `<section><h4>Needed by (${par.length})</h4>${lst(par, 'from')}</section>` : ''}
+      <section><h4>Needs (${deps.length})</h4>${lst(deps, 'to')}</section>
+      <section><h4>Evidence (${n.evidence.length})</h4><ul>${n.evidence.slice(0, 30).map(ev => `<li style="display:block"><code>${esc(ev.file)}</code><div class="fg-muted mono" style="font-size:11.5px">${esc(ev.locator)}${ev.source ? ' · ' + esc(ev.source) : ''}</div></li>`).join('')}</ul></section>`;
+    bindSide(el);
+    $('#fgClear').onclick = () => select(null);
+    $('#fgCenter').onclick = () => { switchView('graph'); focus(S.sel, true); };
+  }
+  function overview(){
+    const s = S.D.stats, max = Math.max(...Object.values(s.by_ecosystem).map(v => v.nodes), 1);
+    const eco = Object.entries(s.by_ecosystem).sort((a,b) => b[1].nodes - a[1].nodes).map(([e,v]) => `<div><span>${esc(GL[e] || e)}</span><span class="t"><span style="width:${(v.nodes/max*100).toFixed(1)}%;background:#6b7280"></span></span><span class="fg-muted" style="text-align:right">${v.nodes}</span></div>`).join('');
+    const risky = Object.keys(S.byNode).filter(id => S.N[id]);
+    const lv = {}; risky.forEach(id => { const w = worst(id); lv[w] = (lv[w] || 0) + 1; });
+    const top = risky.sort((a,b) => (RANK[worst(b)] - RANK[worst(a)]) || ((S.L.dependents[b]||0) - (S.L.dependents[a]||0))).slice(0, 10);
+    const checks = S.D.checks.filter(c => c.check === 'npm-ls');
+    return `<section><div class="fg-muted" style="font-size:12px">whole repository</div><h3>${esc(S.D.project)}</h3>
+        <p class="fg-muted" style="margin:8px 0 12px">Every manifest merged into one graph. Rings are depth; size is how many packages depend on it. Click a node to see how it got in.</p>
+        <div class="fg-num"><div><b>${fmt(s.nodes)}</b><span>packages</span></div><div><b>${s.roots}</b><span>manifests</span></div><div><b>${s.max_depth}</b><span>max depth</span></div><div><b>${fmt(s.edges)}</b><span>edges</span></div></div></section>
+      <section><h4>Packages with findings</h4><div class="fg-num" style="margin-bottom:10px">${RISK.map(r => `<div><b style="color:${riskColor(r)}">${lv[r] || 0}</b><span>${r}</span></div>`).join('')}</div>
+        <ul>${top.map(id => `<li><span class="l">${dot(id)}${link(id)}</span><span class="fg-muted">${(S.byNode[id]||[]).length} · ${S.L.dependents[id] || 0} dependents</span></li>`).join('') || '<li class="fg-muted">No findings matched to graph nodes.</li>'}</ul></section>
+      <section><h4>By ecosystem</h4><div class="fg-bars">${eco}</div></section>
+      <section><h4>Manifests (${S.D.roots.length})</h4><ul>${S.D.roots.map(r => `<li><span class="l">${link(r, lab(S.N[r]))}</span><span class="fg-muted">${esc((S.N[r].properties.resolution || '').replace(/-/g,' '))}</span></li>`).join('')}</ul></section>
+      ${checks.length ? `<section><h4>Accuracy</h4><ul>${checks.map(c => `<li><span class="l">${esc(c.root.replace(/^app:[^/]+\//,''))}</span><span class="fg-tag">npm ls ${esc(c.status)}${c.ours != null ? ' · ' + c.ours + '/' + c.npm_ls : ''}</span></li>`).join('')}</ul></section>` : ''}
+      ${S.D.unsupported.length ? `<section><h4>Not parsed (${S.D.unsupported.length})</h4><ul>${S.D.unsupported.map(u => `<li style="display:block"><code>${esc(u.file)}</code><div class="fg-muted" style="font-size:12px">${esc(u.reason)}</div></li>`).join('')}</ul></section>` : ''}`;
+  }
+  function bindSide(el){ el.querySelectorAll('.fg-link[data-id]').forEach(a => a.onclick = () => select(a.dataset.id, {focus:true})); bindFindingLinks(el); }
+
+  // ---- packages table
+  const COLS = [['name','Package'],['version','Version'],['ecosystem','Ecosystem'],['risk','Worst finding'],['findings','Findings',1],['depth','Depth',1],['dependents','Dependents',1],['direct','Direct'],['scopes','Scopes'],['purl','purl']];
+  function rows(){
+    const q = ($('#fgQ').value || '').toLowerCase(), eco = $('#fgEco').value;
+    return S.D.nodes.filter(n => n.type !== 'application').map(n => ({id:n.id, name:n.name, version:n.version || '', ecosystem:n.ecosystem, risk: worst(n.id) || '', rr: worst(n.id) ? RANK[worst(n.id)] : -1,
+      findings:(S.byNode[n.id]||[]).length, depth:n.min_depth ?? '', dependents:(S.IN[n.id]||[]).length, direct:n.direct ? 'yes' : '', scopes:(n.scopes||[]).join(' '), purl:n.purl || ''}))
+      .filter(r => (!q || r.name.toLowerCase().includes(q) || r.purl.toLowerCase().includes(q)) && (!eco || r.ecosystem === eco) && (!$('#fgRisky').checked || r.findings))
+      .sort((a,b) => { const k = S.sortK === 'risk' ? 'rr' : S.sortK, x = a[k], y = b[k]; return ((typeof x === 'number' && typeof y === 'number') ? x - y : String(x).localeCompare(String(y))) * S.sortD || b.dependents - a.dependents; });
+  }
+  function table(){
+    const rs = rows();
+    $('#fgThead').innerHTML = '<tr>' + COLS.map(([k,t,n]) => `<th class="${n?'n':''}" data-k="${k}">${t}${S.sortK === k ? (S.sortD > 0 ? ' ↑' : ' ↓') : ''}</th>`).join('') + '</tr>';
+    $('#fgThead').querySelectorAll('th').forEach(th => th.onclick = () => { if (S.sortK === th.dataset.k) S.sortD *= -1; else { S.sortK = th.dataset.k; S.sortD = ['risk','findings','dependents'].includes(S.sortK) ? -1 : 1; } table(); });
+    $('#fgTbody').innerHTML = rs.slice(0, 3000).map(r => `<tr data-id="${esc(r.id)}" class="${r.id === S.sel ? 'sel' : ''}">${COLS.map(([k,,n]) => `<td class="${n?'n':''}">${
+      k === 'name' ? `<span class="fg-dot" style="background:${color(S.N[r.id])};margin-right:6px"></span>${esc(r.name)}`
+      : k === 'risk' ? (r.risk ? `<span style="color:${riskColor(r.risk)};font-weight:600">${r.risk}</span>` : '')
+      : k === 'version' && r.version.length > 16 ? `<span title="${esc(r.version)}">${esc(r.version.slice(0,12))}…</span>`
+      : k === 'purl' ? `<code>${esc(r.purl)}</code>` : esc(r[k])}</td>`).join('')}</tr>`).join('');
+    $('#fgCount').textContent = `${fmt(rs.length)} packages`;
+    $('#fgTbody').querySelectorAll('tr').forEach(tr => tr.onclick = () => select(tr.dataset.id));
+  }
+
+  function switchView(v){
+    S.view = v;
+    document.querySelectorAll('.fg-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    $('#fgStage').style.display = v === 'graph' ? '' : 'none';
+    $('#fgTableWrap').style.display = v === 'table' ? '' : 'none';
+    if (v === 'table') table(); else draw();
+  }
+
+  function build(){
+    const D = S.D; S.N = {}; S.OUT = {}; S.IN = {};
+    S.N[PROJ] = {id:PROJ, type:'project', name:D.project, ecosystem:'', scopes:[], evidence:[], properties:{}}; S.OUT[PROJ] = []; S.IN[PROJ] = [];
+    D.nodes.forEach(n => { S.N[n.id] = n; S.OUT[n.id] ||= []; S.IN[n.id] ||= []; });
+    const groups = {}; D.roots.forEach(r => (groups[S.N[r].ecosystem] ||= []).push(r));
+    Object.keys(groups).sort((a,b) => groups[b].length - groups[a].length || a.localeCompare(b)).forEach(eco => {
+      const g = GRP + eco; S.N[g] = {id:g, type:'group', name:GL[eco] || eco, ecosystem:eco, scopes:[], evidence:[], properties:{}};
+      S.OUT[PROJ].push({from:PROJ, to:g}); S.IN[g] = [{from:PROJ, to:g}];
+      S.OUT[g] = groups[eco].map(r => ({from:g, to:r})); groups[eco].forEach(r => S.IN[r].push({from:g, to:r})); });
+    D.edges.forEach(e => { S.OUT[e.from].push(e); S.IN[e.to].push(e); });
+    for (const k in S.OUT) if (k !== PROJ) S.OUT[k].sort((a,b) => full(S.N[a.to]).localeCompare(full(S.N[b.to])));
+    mapFindings(); computeRiskyKeep();
+  }
+
+  window.fullgraph = async function(el){
+    el.innerHTML = `<div class="vhead"><div><h2>Full graph</h2><p>Every manifest in the repository (npm, containers, CI workflows) as one map. The project is in the centre; each ring is one level deeper. Packages with Guardian findings are coloured by their worst finding.</p></div></div>
+      <div class="fg" id="fgRoot"><div class="fg-empty">Loading full graph…</div></div>`;
+    if (S.slug !== SLUG || !S.D) {
+      try { S.D = await api(`/api/report/${SLUG}/output/deptree_graph.json`); S.slug = SLUG; S.sel = null; }
+      catch (e) { $('#fgRoot').innerHTML = `<div class="fg-empty">No full graph for this report yet. Run a new scan of this repository to generate it.${R.full_graph && R.full_graph.error ? `<br><span class="mono xs">${esc(R.full_graph.error)}</span>` : ''}</div>`; return; }
+    }
+    const ecos = [...new Set(S.D.nodes.filter(n => n.type !== 'application').map(n => n.ecosystem))].sort();
+    $('#fgRoot').innerHTML = `
+      <div class="fg-bar">
+        <div class="fg-seg"><button data-v="graph" class="on">Radial</button><button data-v="table">Packages</button><button data-v="risk">Risk paths</button></div>
+        <label>Colour <select id="fgColor"><option value="risk">findings</option><option value="scope">scope</option><option value="depth">depth</option></select></label>
+        <select id="fgEco"><option value="">All ecosystems</option>${ecos.map(e => `<option value="${esc(e)}">${esc(GL[e] || e)}</option>`).join('')}</select>
+        <label><input type="checkbox" id="fgDev" checked> dev</label>
+        <label><input type="checkbox" id="fgRisky"> only paths to findings</label>
+        <span style="flex:1"></span><input type="search" id="fgQ" placeholder="Filter packages…" style="display:none;min-width:200px"><span id="fgCount" class="fg-muted" style="display:none"></span>
+      </div>
+      <div class="fg-body">
+        <div class="fg-stage" id="fgStage"><canvas id="fgCanvas"></canvas>
+          <div class="fg-find"><input id="fgFind" type="search" placeholder="Find a package…" autocomplete="off"><div class="fg-res" id="fgRes"></div></div>
+          <div class="fg-zoom"><button id="fgIn" title="Zoom in">+</button><button id="fgOut" title="Zoom out">−</button><button id="fgFit" title="Fit">⤢</button></div>
+          <div class="fg-legend" id="fgLegend"></div><div class="fg-hint">scroll to zoom · drag to pan · click a node</div><div class="fg-tip" id="fgTip"></div></div>
+        <div class="fg-table" id="fgTableWrap" style="display:none"><table><thead id="fgThead"></thead><tbody id="fgTbody"></tbody></table></div>
+        <aside class="fg-side" id="fgSide"></aside>
+      </div>`;
+    colors($('#fgRoot'));
+    build();
+    bindCanvas();
+    document.querySelectorAll('.fg-seg button').forEach(b => b.onclick = () => { if (b.dataset.v === 'risk') { location.hash = `#/r/${SLUG}/graph`; return; } switchView(b.dataset.v); const t = b.dataset.v === 'table'; $('#fgQ').style.display = t ? '' : 'none'; $('#fgCount').style.display = t ? '' : 'none'; });
+    ['#fgEco','#fgDev','#fgRisky'].forEach(s => $(s).onchange = () => { layout(true); side(); if (S.view === 'table') table(); });
+    $('#fgColor').onchange = () => { legend(); draw(); side(); if (S.view === 'table') table(); };
+    $('#fgQ').oninput = table;
+    $('#fgFind').oninput = () => { const q = $('#fgFind').value.trim().toLowerCase(), box = $('#fgRes'); if (!q) { box.style.display = 'none'; return; }
+      const hits = S.D.nodes.filter(n => full(n).toLowerCase().includes(q)).sort((a,b) => (lab(b).toLowerCase() === q) - (lab(a).toLowerCase() === q) || full(a).localeCompare(full(b))).slice(0, 60);
+      box.style.display = 'block'; box.innerHTML = hits.map(n => `<div data-id="${esc(n.id)}">${dot(n.id)}<span>${esc(full(n))}</span><span class="fg-muted">${n.type === 'application' ? 'manifest' : 'depth ' + (n.min_depth ?? '?')}</span></div>`).join('') || '<div class="fg-muted">No matches</div>';
+      box.querySelectorAll('[data-id]').forEach(d => d.onclick = () => { box.style.display = 'none'; $('#fgFind').value = ''; select(d.dataset.id, {focus:true}); }); };
+    S.view = 'graph';
+    layout(true);
+    side();
+  };
+})();
+
+
+/* ================= AGENTS (LangGraph orchestration) ================= */
+let agSel = null;
+function agentsView(el){
+  const A = R.agents;
+  if (!A) { el.innerHTML = `<div class="vhead"><div><h2>Agents</h2><p>This report was produced before the agent orchestrator was added. Run a new scan to see the agents at work.</p></div></div>`; return; }
+  const by = {}; (A.agents || []).forEach(a => by[a.id] = a);
+  const total = Math.max(A.duration_s || 0, ...(A.agents || []).map(a => (a.started_s || 0) + (a.duration_s || 0)), 0.1);
+  const card = (id, i) => { const a = by[id]; if (!a) return '';
+    return `<div class="ag-card ${agSel === id ? 'on' : ''}" data-ag="${id}"><div class="h"><span class="n">AGENT ${i}</span><span class="ag-st ${a.status}">${a.status}${a.status === 'done' ? ' · ' + a.duration_s + 's' : ''}</span></div>
+      <b>${esc(a.name)}${a.uses_llm ? '<span class="ag-llm">Gemini</span>' : ''}</b><p>${esc(a.summary || a.role)}</p></div>`; };
+  const arrow = '<div class="ag-arrow">→</div>';
+  const sel = by[agSel] || null;
+  el.innerHTML = `<div class="vhead"><div><h2>Agents</h2><p>Six agents work on every scan, coordinated by <b>${esc(A.framework)}</b>. After discovery, two branches run <b>in parallel</b>: advisories plus exploit intelligence, and supply-chain integrity. Change detection runs only when there is a baseline; the last agent ranks and explains.</p></div></div>
+    <div class="ag-flow">
+      <div class="ag-col">${card('discovery', 1)}</div>${arrow}
+      <div class="ag-col"><div class="ag-branch">${card('vulnerability', 2)}<div class="ag-down">↓</div>${card('intel', 3)}</div><div class="ag-branch">${card('integrity', 4)}</div></div>${arrow}
+      <div class="ag-col">${card('change', 5)}</div>${arrow}
+      <div class="ag-col">${card('risk', 6)}</div>
+    </div>
+    <div class="grid g2" style="align-items:start">
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">Timeline · ${A.duration_s}s total</div>
+        <div class="ag-tl">${(A.agents || []).map(a => `<div class="row"><span>${esc(a.name)}</span><span class="track"><span class="bar ${a.status}" style="left:${(100 * (a.started_s || 0) / total).toFixed(1)}%;width:${Math.max(0.6, 100 * (a.duration_s || 0) / total).toFixed(1)}%"></span></span><span class="muted" style="text-align:right">${a.status === 'skipped' ? 'skipped' : a.duration_s + 's'}</span></div>`).join('')}
+          <div class="xs muted" style="margin-top:8px">Overlapping bars ran at the same time.</div></div>
+        <div class="eyebrow" style="margin:18px 0 8px">Orchestration</div>
+        <div class="card pad"><dl class="ag-kv">
+          <dt>Orchestrator</dt><dd>${esc(A.framework)} StateGraph with a parallel fan-out, a join and conditional routing</dd>
+          <dt>LLM</dt><dd>${esc(A.llm.provider)}${A.llm.model ? ' · <b>' + esc(A.llm.model) + '</b>' : ' · not used (deterministic fallback)'}</dd>
+          <dt>LLM client</dt><dd>${esc(A.llm.client || '')}</dd>
+          ${(A.llm.attempts || []).length ? `<dt>Model attempts</dt><dd class="mono xs">${A.llm.attempts.map(esc).join('<br>')}</dd>` : ''}
+        </dl>
+        <div class="eyebrow" style="margin:14px 0 6px">Rules every agent follows</div>
+        <ul class="small" style="margin:0;padding-left:18px">${(A.principles || []).map(p => `<li>${esc(p)}</li>`).join('')}</ul></div>
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:8px">${sel ? 'Agent detail' : 'Click an agent for detail'}</div>
+        ${sel ? `<div class="card pad"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><h3 style="margin:0;font-size:17px">${esc(sel.name)}</h3><span class="ag-st ${sel.status}">${sel.status}</span></div>
+          <p class="muted" style="margin:6px 0 12px">${esc(sel.role)}</p>
+          <dl class="ag-kv"><dt>Started</dt><dd>${sel.started_s}s after scan start</dd><dt>Duration</dt><dd>${sel.duration_s}s</dd>
+          <dt>Uses LLM</dt><dd>${sel.uses_llm ? 'yes: Gemini, explanations only' : 'no: deterministic tools'}</dd>
+          <dt>Result</dt><dd>${esc(sel.summary || '')}</dd>${sel.error ? `<dt>Error</dt><dd style="color:var(--crit)">${esc(sel.error)}</dd>` : ''}</dl>
+          <div class="eyebrow" style="margin:14px 0 6px">Tools</div><div style="display:flex;gap:6px;flex-wrap:wrap">${(sel.tools || []).map(t => `<span class="chip">${esc(t)}</span>`).join('')}</div>
+          ${Object.keys(sel.outputs || {}).length ? `<div class="eyebrow" style="margin:14px 0 6px">Outputs</div><dl class="ag-kv">${Object.entries(sel.outputs).filter(([k,v]) => v !== null && v !== undefined).map(([k,v]) => `<dt>${esc(k.replace(/_/g,' '))}</dt><dd>${typeof v === 'object' ? (Array.isArray(v) ? (v.length ? v.map(x => `<code>${esc(x)}</code>`).join(' ') : '<span class="muted">none</span>') : Object.entries(v).map(([a,b]) => `${esc(a)}: <b>${esc(b)}</b>`).join(' · ')) : esc(typeof v === 'number' ? fmt(v) : v)}</dd>`).join('')}</dl>` : ''}
+        </div>` : `<div class="card pad small muted">Each agent reads the shared scan state, calls its tools, and writes its results back. The orchestrator decides what runs next.</div>`}
+      </div>
+    </div>`;
+  el.querySelectorAll('[data-ag]').forEach(c => c.onclick = () => { agSel = agSel === c.dataset.ag ? null : c.dataset.ag; agentsView(el); });
+}
+
+/* ================= FIXES: proposals, human approval, sandbox apply ================= */
+let FIX = null, fixFilter = {status: '', bump: ''}, fixOpen = null;
+const fixDecision = id => (FIX && FIX.decisions[id]) || {decision: 'pending'};
+function fixForFinding(f){
+  if (!FIX) return '';
+  const fx = FIX.plan.fixes.find(x => x.findings.includes(f.id));
+  if (fx) return `<div class="fixblk" id="fixblk-${esc(fx.id)}">${fixCard(fx, true)}</div>`;
+  const sk = (FIX.plan.skipped || []).find(x => x.findings.includes(f.id));
+  return sk ? `<div class="fixblk"><div class="sec-t">Proposed fix</div><div class="small muted">No automatic fix: ${esc(sk.reason)}.</div></div>` : '';
+}
+function diffTable(rows){
+  if (!rows || !rows.length) return '<div class="small muted">No changes.</div>';
+  return `<div class="dv"><div class="dvh"><span>Current code</span><span>Proposed code</span></div><table>${rows.map(r => r.t === 'gap'
+    ? '<tr class="gap"><td colspan="4">⋯</td></tr>'
+    : `<tr class="${r.t}"><td class="ln">${r.ol ?? ''}</td><td class="o">${r.o != null ? esc(r.o) : ''}</td><td class="ln">${r.nl ?? ''}</td><td class="n">${r.n != null ? esc(r.n) : ''}</td></tr>`).join('')}</table></div>`;
+}
+function fixCard(fx, inDrawer){
+  const d = fixDecision(fx.id);
+  const st = {approved: ['Approved', 'ok'], rejected: ['Rejected', 'no'], pending: ['Waiting for review', 'wait']}[d.decision] || ['Waiting for review', 'wait'];
+  let reviewer = ''; try { reviewer = localStorage.getItem('guardian-reviewer') || ''; } catch (e) {}
+  return `<div class="sec-t">Proposed fix · needs your approval</div>
+    <div class="fixhead"><b>${esc(fx.summary)}</b><span class="fxst ${st[1]}">${st[0]}</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 8px"><span class="chip bump-${fx.bump}">${fx.bump} update</span><span class="chip">${fx.kind === 'direct' ? 'direct dependency' : 'transitive · npm override'}</span>${scopeChip(fx.scope)}<span class="badge b-${fx.max_level}"><i class="dot"></i>${fx.max_level} · ${fx.max_risk}</span></div>
+    <p class="small" style="margin:0 0 10px">${esc(fx.why)}</p>
+    ${diffTable(fx.diff)}
+    <div class="fxdec">
+      <input class="in" data-fx-rev placeholder="Your name" value="${esc(d.decision !== 'pending' ? d.reviewer : reviewer)}">
+      <input class="in" data-fx-com placeholder="Comment (optional)" value="${esc(d.decision !== 'pending' ? d.comment : '')}" style="flex:1;min-width:160px">
+      <button class="btn primary" data-fx-act="approved" data-fx="${esc(fx.id)}">Approve</button>
+      <button class="btn" data-fx-act="rejected" data-fx="${esc(fx.id)}">Reject</button>
+      ${d.decision !== 'pending' ? `<button class="btn ghost" data-fx-act="pending" data-fx="${esc(fx.id)}">Undo</button>` : ''}
+    </div>
+    ${d.decision !== 'pending' ? `<div class="xs muted" style="margin-top:6px">${st[0]} by <b>${esc(d.reviewer)}</b> · ${new Date(d.at).toLocaleString()}${d.comment ? ' · “' + esc(d.comment) + '”' : ''}</div>` : ''}
+    ${inDrawer ? `<div class="xs muted" style="margin-top:8px">Approved fixes are applied to a sandbox copy from the <a href="#/r/${SLUG}/fixes">Fixes</a> tab. The original repository is never changed.</div>` : ''}`;
+}
+document.addEventListener('click', async ev => {
+  const b = ev.target.closest('[data-fx-act]'); if (!b) return;
+  ev.preventDefault(); ev.stopPropagation();
+  const box = b.closest('.fixblk, .fxrow-body'), id = b.dataset.fx;
+  const reviewer = (box.querySelector('[data-fx-rev]') || {}).value || '', comment = (box.querySelector('[data-fx-com]') || {}).value || '';
+  if (b.dataset.fxAct !== 'pending' && !reviewer.trim()) { const r = box.querySelector('[data-fx-rev]'); r.focus(); r.classList.add('need'); return; }
+  try { localStorage.setItem('guardian-reviewer', reviewer); } catch (e) {}
+  b.disabled = true;
+  try {
+    FIX.decisions[id] = await api(`/api/report/${SLUG}/fixes/${encodeURIComponent(id)}/decision`, {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({decision: b.dataset.fxAct, reviewer, comment})});
+  } catch (e) { alert('Could not save the decision: ' + e.message); b.disabled = false; return; }
+  const fx = FIX.plan.fixes.find(x => x.id === id);
+  if (box.classList.contains('fixblk')) box.innerHTML = fixCard(fx, true);
+  else if ($('#v') && location.hash.endsWith('/fixes')) fixesView($('#v'));
+});
+
+function fixesView(el){
+  if (!FIX || !FIX.plan) { el.innerHTML = `<div class="vhead"><div><h2>Fixes</h2><p>Run a new scan to get fix proposals.</p></div></div>`; return; }
+  const P = FIX.plan, res = FIX.result;
+  const cnt = {pending: 0, approved: 0, rejected: 0}; P.fixes.forEach(f => cnt[fixDecision(f.id).decision]++);
+  const rows = P.fixes.filter(f => (!fixFilter.status || fixDecision(f.id).decision === fixFilter.status) && (!fixFilter.bump || f.bump === fixFilter.bump));
+  const stLabel = {approved: 'Approved', rejected: 'Rejected', pending: 'Pending'};
+  el.innerHTML = `<div class="vhead"><div><h2>Fixes</h2><p>Every vulnerable package with a published fix gets a proposed code change. <b>Nothing is applied until a person approves it</b>, and approved fixes go into a sandbox copy that is re-scanned to prove the fix worked.</p></div></div>
+    <div class="fxsteps"><div><b>1</b>Review the old and new code</div><div><b>2</b>Approve or reject each fix</div><div><b>3</b>Apply approved fixes in a sandbox</div><div><b>4</b>Check the re-scan, download the patch</div></div>
+    <div class="card pad fxbar">
+      <div class="fxcounts"><span><b>${cnt.pending}</b> pending</span><span><b style="color:var(--ev)">${cnt.approved}</b> approved</span><span><b style="color:var(--crit)">${cnt.rejected}</b> rejected</span><span class="muted">${(P.skipped || []).length} need a manual fix</span></div>
+      <button class="btn primary" id="fxApply" ${cnt.approved ? '' : 'disabled'}>Apply ${cnt.approved || ''} approved fix${cnt.approved === 1 ? '' : 'es'} in a sandbox</button>
+    </div>
+    <div id="fxResult">${res ? fixResult(res) : ''}</div>
+    <div class="card" style="overflow:hidden;margin-top:16px">
+      <div class="toolbar"><select class="in" id="fxS"><option value="">All decisions</option>${['pending','approved','rejected'].map(s => `<option value="${s}" ${fixFilter.status===s?'selected':''}>${stLabel[s]}</option>`).join('')}</select>
+        <select class="in" id="fxB"><option value="">All update sizes</option>${['patch','minor','major'].map(s => `<option value="${s}" ${fixFilter.bump===s?'selected':''}>${s}</option>`).join('')}</select>
+        <span class="small muted">${rows.length} of ${P.fixes.length} fixes, highest risk first</span></div>
+      ${rows.map(f => { const d = fixDecision(f.id).decision; return `<div class="fxrow ${fixOpen === f.id ? 'open' : ''}">
+        <div class="fxrow-head" data-fxopen="${esc(f.id)}"><span class="badge b-${f.max_level}"><i class="dot"></i>${f.max_risk}</span><b class="mono" style="font-size:13px">${esc(f.package)}</b><span class="mono small">${esc(f.from_version)} → ${esc(f.to_version)}</span><span class="chip bump-${f.bump}">${f.bump}</span><span class="small muted">${f.kind === 'direct' ? 'direct' : 'override'} · ${f.advisories.length} advisor${f.advisories.length === 1 ? 'y' : 'ies'}</span><span class="fxst ${d === 'approved' ? 'ok' : d === 'rejected' ? 'no' : 'wait'}" style="margin-left:auto">${stLabel[d]}</span></div>
+        ${fixOpen === f.id ? `<div class="fxrow-body">${fixCard(f, false)}</div>` : ''}</div>`; }).join('') || '<div class="empty">No fixes match.</div>'}
+    </div>
+    ${(P.skipped || []).length ? `<div class="card pad" style="margin-top:16px"><div class="eyebrow" style="margin-bottom:8px">Needs a manual fix (${P.skipped.length})</div><table class="tbl"><tbody>${P.skipped.map(s => `<tr><td class="mono xs">${esc(s.package)}</td><td class="small">${esc(s.reason)}</td></tr>`).join('')}</tbody></table></div>` : ''}
+    <p class="xs muted" style="margin-top:14px">${esc(P.policy || '')}</p>`;
+  $('#fxS').onchange = e => { fixFilter.status = e.target.value; fixesView(el); };
+  $('#fxB').onchange = e => { fixFilter.bump = e.target.value; fixesView(el); };
+  el.querySelectorAll('[data-fxopen]').forEach(h => h.onclick = () => { fixOpen = fixOpen === h.dataset.fxopen ? null : h.dataset.fxopen; fixesView(el); });
+  $('#fxApply').onclick = async () => {
+    const btn = $('#fxApply'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Applying in sandbox, regenerating lockfile and re-scanning…';
+    try { FIX.result = await api(`/api/report/${SLUG}/fixes/apply`, {method: 'POST'}); }
+    catch (e) { $('#fxResult').innerHTML = `<div class="card pad scan-result err" style="margin-top:12px"><div><b>Could not apply the fixes</b><div class="small">${esc(e.message)}</div></div></div>`; btn.disabled = false; btn.textContent = 'Try again'; return; }
+    fixesView(el);
+  };
+}
+function fixResult(r){
+  const lbl = {resolved: ['Resolved', 'ok'], 'partly resolved': ['Partly resolved', 'wait'], 'not applied': ['Not applied', 'no']};
+  return `<div class="card pad" style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><div class="eyebrow">Sandbox result · ${new Date(r.applied_at).toLocaleString()}</div>
+      <h3 style="margin:4px 0 0;font-size:17px">${r.resolved} of ${r.total} approved fixes verified by re-scan</h3></div>
+      <a class="btn" href="/api/report/${SLUG}/fixes/patch">Download patch (${fmt(r.patch_lines)} lines)</a></div>
+    <table class="tbl" style="margin-top:12px"><thead><tr><th>Package</th><th>Change</th><th>Installed now</th><th>Advisories fixed</th><th>Result</th></tr></thead><tbody>
+      ${r.results.map(x => `<tr><td class="mono xs">${esc(x.package)}</td><td class="mono xs">${esc(x.from_version)} → ${esc(x.to_version)}</td><td class="mono xs">${esc(x.installed_now.join(', ') || '—')}</td><td>${x.advisories_fixed}${x.advisories_left.length ? ` <span class="xs muted">(${x.advisories_left.length} left)</span>` : ''}</td><td><span class="fxst ${lbl[x.status][1]}">${lbl[x.status][0]}</span>${x.note ? `<div class="xs muted" style="margin-top:4px;max-width:260px;white-space:normal">${esc(x.note)}</div>` : ''}</td></tr>`).join('')}</tbody></table>
+    <div class="eyebrow" style="margin:16px 0 8px">package.json in the sandbox</div>${diffTable(r.package_json_diff)}
+    <p class="xs muted" style="margin:10px 0 0">Lockfile regenerated with <code>${esc(r.lockfile_command)}</code> (no install scripts run). The original repository was not changed; apply the patch yourself after review.</p></div>`;
+}
 /* ================= 6. VULNERABILITIES ================= */
 function vulns(el){
   const V = F.filter(f => ['vulnerability','malicious-package'].includes(f.category));
@@ -918,6 +1542,7 @@ function findingDetail(f){
       ${a.evidence_used?.length?`<dt>Evidence relied on</dt><dd>${a.evidence_used.map(s=>`<span class="chip">${esc(s)}</span>`).join(' ')}</dd>`:''}</dl>
       ${isLLM?`<div class="guard"><span>Guardrails:</span><span><b>✔</b> ${a.unverified_ids_removed.length} invented IDs</span><span><b>✔</b> ${(a.evidence_claims_rejected||[]).length} unsupported claims</span><span><b>✔</b> score not changed by AI</span></div>`:''}</div>`
      : `<div class="small muted">Not among the top ${R.ai.sent_findings} sent to the AI (free-tier budget). The evidence and score above are complete.</div>`}
+    ${fixForFinding(f)}
   </div>`;
 }
 let fs = {q:'', l:'', c:'', s:'', ai:true, nw:false}, selF = null;

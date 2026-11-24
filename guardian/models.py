@@ -54,6 +54,10 @@ class Finding:
     fixed_version: str = ""
     references: list[str] = field(default_factory=list)
     changed: bool = False    # introduced by the baseline -> modified diff
+    # filled by the threat-intelligence agent (verified, from CISA KEV / FIRST EPSS)
+    kev: bool = False
+    epss: float | None = None
+    epss_percentile: float | None = None
     # filled by risk.py
     risk_score: int = 0
     risk_level: str = ""

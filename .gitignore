@@ -16,3 +16,6 @@ targets/
 
 # editor settings
 .vscode/
+
+# shared archives
+*.zip

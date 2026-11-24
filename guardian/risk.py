@@ -7,7 +7,8 @@ from __future__ import annotations
 from .models import Finding
 
 BASE = {"CRITICAL": 85, "HIGH": 65, "MEDIUM": 40, "LOW": 20, "INFO": 5}
-HIGH_CONFIDENCE_SOURCES = ("OSV.dev", "Trivy", "lockfile-diff", "Dockerfile rule", "workflow rule",
+ADVISORY_SOURCES = ("OSV.dev", "GitHub Advisory DB")
+HIGH_CONFIDENCE_SOURCES = ("OSV.dev", "GitHub Advisory DB", "Trivy", "lockfile-diff", "Dockerfile rule", "workflow rule",
                            "lockfile-rule", "manifest-rule")
 
 
@@ -45,6 +46,19 @@ def score_finding(f: Finding) -> None:
     if f.changed:
         s += 10
         why.append("+10 newly introduced compared with the trusted baseline")
+    if f.kev:
+        s += 15
+        why.append("+15 actively exploited in the wild (CISA Known Exploited Vulnerabilities)")
+    elif f.epss is not None:
+        if f.epss >= 0.5:
+            s += 10
+            why.append(f"+10 high exploitation likelihood (EPSS {f.epss:.0%})")
+        elif f.epss >= 0.1:
+            s += 5
+            why.append(f"+5 elevated exploitation likelihood (EPSS {f.epss:.0%})")
+        elif f.epss < 0.01:
+            s -= 5
+            why.append(f"-5 low exploitation likelihood (EPSS {f.epss:.2%})")
     if f.category == "vulnerability" and not f.fixed_version:
         s += 5
         why.append("+5 no fixed version published")
@@ -54,7 +68,9 @@ def score_finding(f: Finding) -> None:
     f.risk_rationale = why
 
     srcs = [e.source for e in f.evidence]
-    if any(src.startswith(HIGH_CONFIDENCE_SOURCES) for src in srcs):
+    if sum(1 for a in ADVISORY_SOURCES if any(src.startswith(a) for src in srcs)) >= 2:
+        f.confidence = "High (2 sources)"
+    elif any(src.startswith(HIGH_CONFIDENCE_SOURCES) for src in srcs):
         f.confidence = "High"
     elif "npm downloads API" in srcs:
         f.confidence = "Medium-High"

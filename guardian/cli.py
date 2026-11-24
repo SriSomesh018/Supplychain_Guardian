@@ -15,7 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def _emit(step, status, message, metrics=None):
-    print(f"[guardian {time.strftime('%H:%M:%S')}] {step:<8} {status:<7} {message}", flush=True)
+    line = f"[guardian {time.strftime('%H:%M:%S')}] {step:<8} {status:<7} {message}"
+    try:
+        print(line, flush=True)
+    except UnicodeEncodeError:  # legacy Windows consoles (cp1252) cannot print e.g. "≥"
+        print(line.encode("ascii", "replace").decode("ascii"), flush=True)
 
 
 def scan(args) -> int:
